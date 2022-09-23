@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CMD Guid to CID with Reinjection Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>CMD GUID Converter Tool</h1>
+</head>
+
+<body>
+    <div class="elasticform">
+    <form action="/getcid" method="POST">
+        <p>GUID: <input type="text" name="guid" /><input type="submit" value="Submit"></p>
+    </form>
+    </div>
+    <p><a href="/layout">Home</a></p>
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

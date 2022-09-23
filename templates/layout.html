@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <header>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <!-- menu bar -->
+        <div class="navbar">
+        <h1>TE Case Manager</h1>
+        <a href="https://confluence.vrt.sourcefire.com/calendar/mycalendar.action" target="_blank">Team Calendar</a>
+        <div class="dropdown">
+          <button class="dropbtn">Tickets
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("runscript")}}>Get Ticket Data</a>
+            <a href={{url_for("assigned")}}>Assigned</a>
+            <a href={{url_for("unassigned")}}>Unassigned</a><a href={{url_for("getacetix")}}>ACE Assigned Tickets</a>
+            <a href={{url_for("talosjiratickets")}}>Talos-Jira</a>
+            <a href={{url_for("umbrjiratickets")}}>Umbrella-Jira</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+         <button class="dropbtn">Umbrella-Tools
+          <i class="fa fa-caret-down"></i>
+         </button>
+          <div class="dropdown-content">
+            <a href="https://confluence.vrt.sourcefire.com/display/TET/UMBRELLA+Escalations" target="_blank">Confluence Process Page</a>
+            <a href="https://editor.securityresearch.umbrella.com/editor" target="_blank">Research Editor</a>
+            <a href="https://suptool.qq.opendns.com/" target="_blank">Curious Kitten</a>
+            <a href="http://analystdash.securityresearch.umbrella.com/findtheblock" target="_blank">Find the Block</a>
+            <a href="https://feeds-proxy.prod.reseng.umbrella.com/actionman/export-proxy-2/curlink/" target="_blank">Manual Proxy Search</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Search Tools
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("bzsearch")}}>Bugzilla Searches</a>
+            <a href="/elasticq">Elastic Queries</a>
+            <a href="https://armory-sl.sco.cisco.com/web/cua/conviction/query" target="_blank" >CUA Search</a>
+          </div>
+        </div>
+
+        <div class="dropdown">
+          <button class="dropbtn">Scripts
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("cmdtool")}}>GUID->CID Converter</a>
+            <a href={{url_for("reinjection")}}>Reinjection</a>
+            <a href={{url_for("sbjat")}}>SBRS Jira Auotmation</a>
+          </div>
+        </div>
+
+        <a href={{url_for("logout")}}>Logout</a>
+        </div>
+    </header>
+
+    <body>
+    <!--timezone widgets-->
+    <div class="clocks">
+     <div class="cleanslate w24tz-current-time w24tz-middle" style="display: inline-block !important; visibility: hidden !important; min-width:300px !important; min-height:145px !important;"><p><a href="//24timezones.com/time-zone/utc" style="text-decoration: none" class="clock24" id="tz24-1644522455-tzutc-eyJob3VydHlwZSI6MTIsInNob3dkYXRlIjoiMSIsInNob3dzZWNvbmRzIjoiMCIsImNvbnRhaW5lcl9pZCI6ImNsb2NrX2Jsb2NrX2NiNjIwNTZiZDc2OWIyYyIsInR5cGUiOiJkYiIsImxhbmciOiJlbiJ9" title="Current time in UTC" target="_blank">UTC</a></p><div id="clock_block_cb62056bd769b2c"></div></div>
+      <script type="text/javascript" src="//w.24timezones.com/l.js" async></script>
+     <div class="cleanslate w24tz-current-time w24tz-middle" style="display: inline-block !important; visibility: hidden !important; min-width:300px !important; min-height:145px !important;"><p><a href="//24timezones.com/time-zone/et" style="text-decoration: none" class="clock24" id="tz24-1644523920-tzedt-eyJob3VydHlwZSI6MTIsInNob3dkYXRlIjoiMSIsInNob3dzZWNvbmRzIjoiMCIsImNvbnRhaW5lcl9pZCI6ImNsb2NrX2Jsb2NrX2NiNjIwNTcxOTA3NTEwYyIsInR5cGUiOiJkYiIsImxhbmciOiJlbiJ9" title="EDT timezone" target="_blank">EDT</a></p><div id="clock_block_cb620571907510c"></div></div>
+      <script type="text/javascript" src="//w.24timezones.com/l.js" async></script>
+     <div class="cleanslate w24tz-current-time w24tz-middle" style="display: inline-block !important; visibility: hidden !important; min-width:300px !important; min-height:145px !important;"><p><a href="//24timezones.com/time-zone/pt" style="text-decoration: none" class="clock24" id="tz24-1644523955-tzpst-eyJob3VydHlwZSI6MTIsInNob3dkYXRlIjoiMSIsInNob3dzZWNvbmRzIjoiMCIsImNvbnRhaW5lcl9pZCI6ImNsb2NrX2Jsb2NrX2NiNjIwNTcxYjNjMjUyMiIsInR5cGUiOiJkYiIsImxhbmciOiJlbiJ9" title="PST what time is now" target="_blank">PST</a></p><div id="clock_block_cb620571b3c2522"></div></div>
+      <script type="text/javascript" src="//w.24timezones.com/l.js" async></script>
+    <div class="cleanslate w24tz-current-time w24tz-middle" style="display: inline-block !important; visibility: hidden !important; min-width:300px !important; min-height:145px !important;"><p><a href="//24timezones.com/time-zone/ist" style="text-decoration: none" class="clock24" id="tz24-1652442229-tzist-eyJob3VydHlwZSI6MTIsInNob3dkYXRlIjoiMSIsInNob3dzZWNvbmRzIjoiMCIsImNvbnRhaW5lcl9pZCI6ImNsb2NrX2Jsb2NrX2NiNjI3ZTQ0NzVlM2Y3NyIsInR5cGUiOiJkYiIsImxhbmciOiJlbiJ9" title="current time in IST" target="_blank">IST</a></p><div id="clock_block_cb627e4475e3f77"></div></div>
+      <script type="text/javascript" src="//w.24timezones.com/l.js" async></script>
+    </div>
+
+      <div class="tiles tile thover">
+         <a href="https://jupiterui.ironport.com" target="_blank">
+             <img alt="jptr" src="../static/imgs/jupiter.jpeg"
+                  height="200"></a>
+          <div class="caption ">Jupiter</div>
+      </div>
+
+      <div class="tiles tile thover">
+          <a href="https://sherlock.ironport.com" target="_blank">
+             <img alt="sherlock" src="../static/imgs/sherlock.png"
+                  height="200"></a>
+          <div class="caption ">Sherlock</div>
+      </div>
+
+      <div class="tiles tile thover">
+          <a href="https://fmd-repapi-01tst.vrt.sourcefire.com/calc/" target="_blank">
+              <img alt="scoretool" src="../static/imgs/scrtool.png"
+                  height="200" width="280"></a>
+              <div class="caption">Score Tool</div>
+      </div>
+
+      <div class="tiles tile thover">
+          <a href="https://fmd-tepot-01tst.vrt.sourcefire.com/" target="_blank">
+              <img alt="tea" src="../static/imgs/tea.png"
+                   height="200"></a>
+            <div class="caption ">TEA GUI</div>
+      </div>
+
+
+      <div class="tiles tile thover">
+            <a href="https://amptools.cisco.com/" target="_blank">
+              <img alt="ampwrench" src="../static/imgs/tools.png"
+                   height="200"></a>
+          <div class="caption">AMP Tools</div>
+      </div>
+
+      <div class="tiles tile thover">
+          <a href="https://talosintelligence.com/reputation" target="_blank">
+              <img alt="ampwrench" src="../static/imgs/talosrep.png"
+                   height="200" width="280"></a>
+          <div class="caption">Talos Reputation</div>
+      </div>
+
+    <!--iframes for backlog and lang acronyms
+    <div class="frames">
+        <div class="framtile">
+          <h2>IPAS Lang Acronyms</h2>
+          <iframe src={{url_for("langs")}}></iframe>
+        </div>
+        <div class="framtile">
+         <h2>Backlog Buddies</h2>
+         <iframe src={{url_for("backlogbuddy")}}></iframe>
+         </div>
+    </div>
+    -->
+    </body>
+    <!--Footer section-->
+    <div class="footer">
+      <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+    </div>
+</html>

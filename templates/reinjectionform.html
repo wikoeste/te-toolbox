@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TE Reinjection Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>Reinjection Tool via Sherlock API</h1>
+</head>
+
+<body>
+    <p><a href="/layout">Home</a></p>
+    <legend>Enter a list of CIDs:</legend>
+    <div class="elasticform">
+    <form action="/getrj" method="POST">
+        <!--<p>CID: <input type="text" name="cid" /><input type="submit" value="Submit"></p>-->s
+        <textarea rows="25" cols="50" name="cid"></textarea><br>
+        <input type="submit" value="Submit"></p>
+    </form>
+    </div>
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

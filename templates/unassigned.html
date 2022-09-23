@@ -1,0 +1,55 @@
+<html>
+<head>
+<link rel='stylesheet' href = '{{ url_for('static', filename='css/main.css') }}'>
+<h1 class='logo'>Unassigned</h1>
+</head>
+<body><style>
+table, th, td {
+border: 1px solid black;
+border-collapse: collapse;
+}
+</style>
+<table style='width:100%'>
+<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>
+  <tr>
+    <th>Link</th>
+    <th>Description</th>
+    <th>Created</th>
+    <th>Assign</th>
+  </tr>
+  <tr>
+    <td><a href=https://bugzilla.vrt.sourcefire.com/show_bug.cgi?id=2408258 target=_blank>2408258</a></td>
+    <td>[CUST][FP] Ednetics - AMP - Tetra - FP Report for[...]</td>
+    <td>2022-09-23T16:16:32Z</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=2408258><label for=2408258>2408258</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60959 target=_blank>COG-60959</a></td>
+    <td>Domain categorization</td>
+    <td>2022-09-23T09:27:30.000-0700</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-60959><label for=COG-60959>COG-60959</label><br></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button type=submit>Take Selected Tickets</button></form></td>
+  </tr>
+  <tr>
+    <td>Total Opened</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>Jira</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>Bugzilla</td>
+    <td>1</td>
+  </tr>
+</table>
+<div class=footer>
+<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

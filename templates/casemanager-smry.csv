@@ -1,0 +1,16 @@
+CID
+cidG500632cgNX2mhMpan8BgB22Gm43nK7ae
+"Wed, 21 Sep 2022 10:52:51 EDT"
+Rule Version:20220923_174703
+Subject: CSIRO Plan Change Request - 0450501453
+Senders: ['Samantha.Sigmund@csiro.au']
+Recipients: ['ges.mobiles.csiro.mac@team.telstra.com']
+Sending IP: 2405:b000:302:71::85:123
+Flags: 
+Keywords: nara_u dpp c3 nara wk cl
+Eng,Score,Verdict,Header Present,SBRS
+"['ESA', None, None, 'False', None]"
+"['Corpus', 13.1, 'N: No results (ham)', 'True', 4.0]"
+"['Reinj', 4.61, 'N: No results (ham)', 'True', 4.0]"
+"
+"

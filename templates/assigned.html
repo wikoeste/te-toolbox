@@ -1,0 +1,101 @@
+<html>
+<head>
+<link rel='stylesheet' href = '{{ url_for('static', filename='css/main.css') }}'>
+<h1 class='logo'>Assigned</h1>
+</head>
+<body><style>
+table, th, td {
+border: 1px solid black;
+border-collapse: collapse;
+}
+</style>
+<table style='width:100%'>
+<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>
+  <tr>
+    <th>Link</th>
+    <th>Description</th>
+    <th>DateOpened</th>
+    <th>LastModified</th>
+    <th>Bulk Resolve</th>
+  </tr>
+  <tr>
+    <td><a href=https://bugzilla.vrt.sourcefire.com/show_bug.cgi?id=2401312 target=_blank>2401312</a></td>
+    <td>[CUST][FP] SOCIETE GENERALE - Snort - 1:60324:1</td>
+    <td>2022-09-15T09:43:14Z</td>
+    <td>2022-09-22T09:00:44Z</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=2401312><label for=2401312>2401312</label><br></td>
+  </tr>
+  <tr>
+    <td><a href=https://bugzilla.vrt.sourcefire.com/show_bug.cgi?id=2406460 target=_blank>2406460</a></td>
+    <td>[CUST][FP] TOYOTA SYSTEMS CORPORATION - AMP - [Tetra] - FP Report for[...]</td>
+    <td>2022-09-22T09:00:29Z</td>
+    <td>2022-09-23T11:19:19Z</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=2406460><label for=2406460>2406460</label><br></td>
+  </tr>
+  <tr>
+    <td><a href=https://bugzilla.vrt.sourcefire.com/show_bug.cgi?id=2406462 target=_blank>2406462</a></td>
+    <td>[CUST][Review] DHL INFORMATION SERVICES - AMP - review files for[...]</td>
+    <td>2022-09-22T09:00:33Z</td>
+    <td>2022-09-23T12:23:34Z</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=2406462><label for=2406462>2406462</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60900 target=_blank>COG-60900</a></td>
+    <td>FP TELSTRA CORPORATION IPAS legitimate email marked as spam 694288828</td>
+    <td>2022-09-21T00:47:24.000-0700</td>
+    <td>2022-09-23T06:31:02.000-0700</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-60900><label for=COG-60900>COG-60900</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60836 target=_blank>COG-60836</a></td>
+    <td>Outgoing Legitimate emails detected as SPAM</td>
+    <td>2022-09-18T01:35:38.000-0700</td>
+    <td>2022-09-23T06:31:40.000-0700</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-60836><label for=COG-60836>COG-60836</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60815 target=_blank>COG-60815</a></td>
+    <td>FN FAR EAST GROUP LTD - IPAS spam email being missed 694264784</td>
+    <td>2022-09-15T23:27:54.000-0700</td>
+    <td>2022-09-23T05:57:16.000-0700</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-60815><label for=COG-60815>COG-60815</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60813 target=_blank>COG-60813</a></td>
+    <td>Proximus Netcentre ICT || False positive</td>
+    <td>2022-09-15T23:10:46.000-0700</td>
+    <td>2022-09-22T04:46:38.000-0700</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-60813><label for=COG-60813>COG-60813</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.sco.cisco.com/browse/COG-60665 target=_blank>COG-60665</a></td>
+    <td>[RCA] DAIMLER-BENZ AG - RCA required for the Tlaos outage on 2nd Sep</td>
+    <td>2022-09-09T01:30:51.000-0700</td>
+    <td>2022-09-23T05:56:21.000-0700</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-60665><label for=COG-60665>COG-60665</label><br></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td><button type=submit>Resolve Tickets</button></form></td>
+  </tr>
+  <tr>
+    <td>Total Opened</td>
+    <td>8</td>
+  </tr>
+  <tr>
+    <td>Jira</td>
+    <td>5</td>
+  </tr>
+  <tr>
+    <td>Bugzilla</td>
+    <td>3</td>
+  </tr>
+</table>
+<div class=footer>
+<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>
