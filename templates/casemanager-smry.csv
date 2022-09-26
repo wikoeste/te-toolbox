@@ -1,16 +1,10 @@
-CID
-cidG500632cgNX2mhMpan8BgB22Gm43nK7ae
-"Wed, 21 Sep 2022 10:52:51 EDT"
-Rule Version:20220923_174703
-Subject: CSIRO Plan Change Request - 0450501453
-Senders: ['Samantha.Sigmund@csiro.au']
-Recipients: ['ges.mobiles.csiro.mac@team.telstra.com']
-Sending IP: 2405:b000:302:71::85:123
-Flags: 
-Keywords: nara_u dpp c3 nara wk cl
-Eng,Score,Verdict,Header Present,SBRS
-"['ESA', None, None, 'False', None]"
-"['Corpus', 13.1, 'N: No results (ham)', 'True', 4.0]"
-"['Reinj', 4.61, 'N: No results (ham)', 'True', 4.0]"
-"
-"
+Link,Description,Created,Assign
+<a href =https://jira.sco.cisco.com/browse/COG-60976 target=_blank>COG-60976</a>,[FN] -IASRI- Email should be spam,2022-09-26T04:00:05.000-0700,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-60976><label for=COG-60976>COG-60976</label><br>
+<a href =https://jira.sco.cisco.com/browse/COG-60975 target=_blank>COG-60975</a>,[FN] -IASRI- Email should be spam,2022-09-26T03:58:59.000-0700,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-60975><label for=COG-60975>COG-60975</label><br>
+<a href =https://jira.sco.cisco.com/browse/COG-60974 target=_blank>COG-60974</a>,[FN] -IASRI- Email should be spam,2022-09-26T03:57:23.000-0700,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-60974><label for=COG-60974>COG-60974</label><br>
+<a href =https://jira.sco.cisco.com/browse/COG-60973 target=_blank>COG-60973</a>,[FN] -IASRI- Email should be spam,2022-09-26T03:54:04.000-0700,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-60973><label for=COG-60973>COG-60973</label><br>
+<a href =https://jira.sco.cisco.com/browse/COG-60972 target=_blank>COG-60972</a>,[FN] GOVERNMENT TECH - IPAS - Spam Analysis,2022-09-26T02:38:30.000-0700,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-60972><label for=COG-60972>COG-60972</label><br>
+,,,<button type=submit>Take Selected Tickets</button></form>
+Total Opened,5
+Jira,5
+Bugzilla,0
