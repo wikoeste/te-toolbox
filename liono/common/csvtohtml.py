@@ -20,7 +20,7 @@ def writedata(flag):
         ids  = list(itertools.chain.from_iterable(settings.filedata['ID']))
         total = len(url)
         for c in url:
-            if "COG" in c:
+            if "bugzilla" not in c:
                 count+=1
             else:
                 bzcount+=1
@@ -39,18 +39,20 @@ def writedata(flag):
             times = "None"
     elif flag == "juno2": # sha256
         hdrs = ["CIDS", "Dates"]
-        if len(settings.elasticqrys['cids']) > 1:
+        if len(settings.elasticqrys['cids']) >= 1:
             msgid = settings.elasticqrys['cids']
             date  = settings.elasticqrys['dates']
         else:
             msgid = "None"
             times = "None"
     elif flag == "juno3": # senderip
-        hdrs = ["CIDS"]
+        hdrs = ["CIDS","DATE"]
+        msgid = settings.elasticqrys['cids']
+        dates = settings.elasticqrys['cats']
     elif flag == "juno4": #sender email
         hdrs = ["CIDS"]
     elif flag == "juno": # domains
-        hdrs  = ["cid", "date"]
+        hdrs  = ["cid", "category"]
         msgid = settings.elasticqrys['cids']
         categ = settings.elasticqrys['cats']
     elif flag == "cmd": #talos guid to cmd converter
@@ -93,6 +95,9 @@ def writedata(flag):
         elif flag == "juno2": # sha 256
             for row in range(int(len(msgid))):
                 writer.writerow([msgid[row], date[row]])
+        elif flag == "juno3":  # sender ip
+            for row in range(int(len(msgid))):
+                writer.writerow([msgid[row], dates[row]])
         elif flag == "juno":
             for row in range(int(len(msgid))):
                 writer.writerow([msgid[row],categ[row]])
@@ -126,16 +131,6 @@ def writedata(flag):
         elif flag == "rj":
             for i in settings.guidconvert['rj']:
                 writer.writerow([i])
-            #sbrs data for the sending ip if any
-            if len(settings.guidconvert['sbrs']) > 0:
-                writer.writerow([settings.guidconvert['sbrs']])
-            # tracker decoder scores data
-            trackerhdrs = ['Eng', 'Score', 'Verdict', 'Header Present', 'SBRS']
-            writer.writerow(trackerhdrs)
-            writer.writerow([settings.guidconvert['esascores']])
-            writer.writerow([settings.guidconvert['corpscores']])
-            writer.writerow([settings.guidconvert['rjscores']])
-            writer.writerow('\n')
         elif flag == "sbjat":
             if "None" in ids[0] or len(ids) == 0:
                 writer.writerow(['None','None','N/A','N/A'])
@@ -180,6 +175,8 @@ def htmloutput(fname): # wrtite html file from the csv file
           "</head>\n" \
           "<body>"
     table = css
+    table += "\n<div class='tblcontainer'>\n" \
+            "<table class='tbl'>\n"
     table += "<style>\n" \
             "table, th, td {\n" \
                 "border: 1px solid black;\n" \
@@ -201,7 +198,7 @@ def htmloutput(fname): # wrtite html file from the csv file
         for column in row:
             table += "    <td>{0}</td>\n".format(column.strip())
         table += "  </tr>\n"
-    table   += "</table>\n"
+    table   += "</table>\n</div>\n"
     footer   = "<div class=footer>\n" \
                "<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>\n" \
                "</div>\n"

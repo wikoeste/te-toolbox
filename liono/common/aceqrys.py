@@ -21,6 +21,9 @@ def htmltable(data):
           "</head>\n" \
           "<body>"
     table = css
+    table += "\n<div class='tblcontainer'>\n" \
+             "<table class='tbl'>\n"
+    '''
     table += "<style>\n" \
             "table, th, td {\n" \
                 "border: 1px solid black;\n" \
@@ -28,6 +31,7 @@ def htmltable(data):
             "}\n" \
             "</style>\n" \
             "<table style='width:100%'>\n"
+    '''
     # Add links for menu
     table += homelink
     # Create the table's column headers
@@ -42,7 +46,7 @@ def htmltable(data):
         for column in row:
             table += "    <td>{0}</td>\n".format(column.strip())
         table += "  </tr>\n"
-    table += "</table>"
+    table += "</table>\n</div>"
     # add footer to webpage
     footer = "<div class=footer>\n" \
              "<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>\n" \
@@ -107,6 +111,60 @@ def get_ace_dispute():
         for row in records:
             sdrid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/sdr/disputes/"+str(sdrid)+" target=_blank>"+str(sdrid)+"</a>")
+        print("================")
+        #/////////////////////
+        # Get ALL reopened tickets, wbrs,sdr,file; and display
+        webreopened  = ("SELECT id FROM disputes where user_id = %(user_id)s and status='RE-OPENED'")
+        filereopened = ("SELECT id FROM file_reputation_disputes where user_id = %(user_id)s and status='RE-OPENED'")
+        sdrreopened  = ("SELECT id FROM sender_domain_reputation_disputes where user_id = %(user_id)s and status='RE-OPENED'")
+        cursor.execute(webreopened, {'user_id':uid})
+        webrecords   = cursor.fetchall()
+        cursor.execute(filereopened, {'user_id':uid})
+        filerecords  = cursor.fetchall()
+        cursor.execute(sdrreopened, {'user_id':uid})
+        sdrrecords  = cursor.fetchall()
+        unassigned  = len(webrecords) + len(filerecords) + len(sdrrecords)
+        print("Re-Opened Tickets {}".format(unassigned))
+        data.append("Re-Opened Tickets:{}".format(unassigned))
+        for row in webrecords:
+            # print(row[0])
+            webid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/" + str(
+                webid) + " target=_blank>" + str(webid) + "</a>")
+        for row in filerecords:
+            fid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/file_rep/disputes/" + str(
+                fid) + " target=_blank>" + str(fid) + "</a>")
+        for row in sdrrecords:
+            sdrid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/sdr/disputes/" + str(
+                sdrid) + " target=_blank>" + str(sdrid) + "</a>")
+        htmltable(data)
+        # ///////////////////
+        # Get ALL unassigned tickets, wbrs,sdr,file; and display
+        webunassigned   = ("SELECT id FROM disputes where status='NEW'")
+        fileunassigned  = ("SELECT id FROM file_reputation_disputes where status='NEW'")
+        sdrunassigned   = ("SELECT id FROM sender_domain_reputation_disputes where status='NEW'")
+        cursor.execute(webunassigned)
+        webrecords      = cursor.fetchall()
+        cursor.execute(fileunassigned)
+        filerecords     = cursor.fetchall()
+        cursor.execute(sdrunassigned)
+        sdrrecords      = cursor.fetchall()
+        unassigned = len(webrecords)+len(filerecords)+len(sdrrecords)
+        print("Total Unassigned tickets {}".format(unassigned))
+        data.append("All Unassigned ACE tickets:{}".format(unassigned))
+        for row in webrecords:
+            #print(row[0])
+            webid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/"+str(webid)+" target=_blank>"+str(webid)+"</a>")
+        for row in filerecords:
+            fid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/file_rep/disputes/"+str(fid)+" target=_blank>"+str(fid)+"</a>")
+        for row in sdrrecords:
+            sdrid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/sdr/disputes/"+str(sdrid)+" target=_blank>"+str(sdrid)+"</a>")
+        # Close the DB connection
         cursor.close()
         connection.close()
         htmltable(data)

@@ -12,9 +12,14 @@
           </button>
           <div class="dropdown-content">
             <a href={{url_for("runscript")}}>Get Ticket Data</a>
-            <a href={{url_for("assigned")}}>Assigned</a>
-            <a href={{url_for("unassigned")}}>Unassigned</a><a href={{url_for("getacetix")}}>ACE Assigned Tickets</a>
-            <a href={{url_for("talosjiratickets")}}>Talos-Jira</a>
+            <a href={{url_for("assigned")}}> My Assigned</a>
+            <a href={{url_for("unassigned")}}>Unassigned</a>
+            <a href={{url_for("getacetix")}}>Analyst Console</a>
+            <a href={{url_for("talosjiratickets")}}>Talos-Jira-All</a>
+            <a href={{url_for("talosjiraeers")}}>Talos-Jira-EERS</a>
+            <a href={{url_for("talosjiraampbp")}}>Talos-Jira-AMPBP</a>
+            <a href={{url_for("talosjiraops")}}>Talos-Jira-TalosOps</a>
+            <a href={{url_for("retengjira")}}>Eng/RET-Jira-Efficacy</a>
             <a href={{url_for("umbrjiratickets")}}>Umbrella-Jira</a>
           </div>
         </div>

@@ -1,6 +1,6 @@
 from liono.common import settings
 settings.init()
-import requests,json,time
+import requests,json,time,re
 requests.packages.urllib3.disable_warnings()
 from terminaltables import AsciiTable
 from datetime import datetime
@@ -176,23 +176,31 @@ def senderemail(fromaddr): # 12 month search
         print(fromTable.table)
 
 def senderip(ip): # 12 months max 50 results
-    qry     = '{"size":10,"_source":["message_id","add_timestamp"],"query":{"term":{"sender_ip":"'+str(ip)+'"}}}'
+    qry     = '{"size":50,"_source":["message_id","add_timestamp"],"query":{"term":{"sender_ip":"'+ip+'"}}}'
     headers =  {'Content-type': 'application/json'}
     cids,cats,scores,timestamps = ([],[],[],[])
     total = 0
     try:
-        response = requests.get(settings.juno+"juno_past_12_months_search?", headers=headers,data=qry, auth=(settings.uname,settings.junoKey),verify=False, timeout=120, stream = True)
+        response = requests.get(settings.juno+"juno_past_12_months/_search?", headers=headers,data=qry, auth=(settings.uname,settings.junoKey),verify=False,timeout=120,stream=True)
         if response.status_code == 200:
             jresult = response.json()
             print(json.dumps(jresult, indent=2))
             total = jresult['hits']['total']['value']
             if total > 0:
                 print(json.dumps(jresult, indent=2))
+                for i in jresult["hits"]["hits"]:
+                    settings.elasticqrys["cids"].append(i["_id"])
+                    ts = i["_source"]["add_timestamp"]
+                    tsreadable = time.strftime("%a, %d %b %Y %H:%M:%S %Z", time.localtime(ts))
+                    tsfrmt = re.sub(',', ' ', tsreadable)
+                    settings.elasticqrys["cats"].append(tsfrmt)
+            else:
+                settings.elasticqrys["cids"].append("None")
+                settings.elasticqrys["cats"].append("--")
         else:
             print("Error HTTP {}".format(response.status_code))
     except requests.ConnectionError as e:
-        sendipTable = AsciiTable([['Juno API Timeout']])
-        print(sendipTable.table)
+        print("ERROR Reaching Juno server!")
 
 def timeconverter(timestamp):
     p = '%Y-%m-%dT%H:%M:%S.%fZ'

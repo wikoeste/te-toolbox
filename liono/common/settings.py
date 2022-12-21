@@ -17,6 +17,8 @@ def gethome():
         fname   = osx
         home    = "/Users/{}".format(uname)
     return fname,home
+
+#Get api keys for internal lookups
 def getKey(keyname):
     #take the search keyname and return the appropriate api key
     with open(fname, 'r') as fp:
@@ -24,14 +26,17 @@ def getKey(keyname):
         for l in lines:
             if keyname.upper() in l:
                 match = l
-    key = re.sub(r'.*=','',match)
-    #print(key)
+    key = re.sub(r'.*=','',match) # remove key name and = sign
+    key = re.sub(r'"','',key) # remove quotes from keys
+    print(key)
     return key
+
+# Setting global vars
 que = queue.Queue()
 cec                 = ''
 uname               = getpass.getuser()
 fname,homedir       = gethome()
-bzKey               = getKey("bz_api")
+bzKey               = getKey("bugzilla_api_key")
 junoKey             = getKey("jupiter")
 sherlockKey         = getKey("sherlock")
 #juno                = 'https://prod-juno-search.sv4.ironport.com/'
@@ -48,6 +53,7 @@ talosjira           = "https://jira.talos.cisco.com/rest/api/2/search"
 tejira              = "https://jira.sco.cisco.com/rest/api/2/search"
 bugzilla            = "https://bugzilla.vrt.sourcefire.com/rest/bug"
 ace                 = "https://analyst-console.vrt.sourcefire.com"
+engjira             = "https://jira-eng-rtp3.cisco.com/rest/api/2/search"
 # data dictionary of all ticket data
 filedata            = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
 elasticqrys         = {"cids":[],"cats":[]}

@@ -11,9 +11,6 @@ def assignque(ticket):
             if "COG" in ticket:
                 results = jira(ticket)
                 return results
-            elif "analyst-console" in ticket:
-                results = aceticket(ticket)
-                return results
             elif ticket.isdigit() == True:  # its bugzilla
                 results = bzticket(ticket)
                 return results
@@ -22,9 +19,6 @@ def assignque(ticket):
     else:
         if "COG" in ticket:
             results = jira(ticket)
-            return results
-        elif "analyst-console" in ticket:
-            results = aceticket(ticket)
             return results
         elif ticket.isdigit() == True: #its bugzilla
             results = bzticket(ticket)
@@ -70,7 +64,7 @@ def resolveclose(ticket):
     elif ticket.isdigit() == True:  # its bugzilla, resolve bz ticket
         status     = "Resolved"
         resolution = ["Pending","Fixed","Invalid","Later","Complteted","Duplicate","Wontfix","worksforme"]
-        data = {'comment': {u'body': u'test comment', 'is_private': False}, "status":status,
+        data = {'comment': {u'body': u'Closing this bug as, Resolved Fixed', 'is_private': False}, "status":status,
             "resolution":resolution[1],'api_key': settings.bzKey}
         response = requests.put(settings.bugzilla +"/"+ ticket, headers=hdrs, json=data, verify=False)
         if response.status_code == 200 or 201:
@@ -81,7 +75,7 @@ def resolveclose(ticket):
             return err
     else:
         print("invalid ticket, ", +ticket)
-def bzticket(bugid):
+def bzticket(bugid): # auto assign and comment bz tickets
     teuser = settings.uname+"@cisco.com"
     params = {'id': int(bugid), 'assigned_to': teuser,'api_key': settings.bzKey}
     resp = requests.put(settings.bugzilla+"/"+bugid, params=params, verify=False)
@@ -107,5 +101,3 @@ def bzticket(bugid):
     else:
         err = ("BZ API Assign Error {}".format(resp.status_code))
         return err
-def aceticket(ticket):
-    print("ace api")

@@ -162,3 +162,19 @@ body {
   display: inline-block;
   text-align: right
 }
+
+/*table format with scrollbars*/
+.tblcontainer {
+    height: 800px;
+    overflow-y: auto;
+}
+.tbl {
+    position: sticky;
+    top: 0;
+    width:100%;
+}
+tr, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    table-layout:fixed;
+}

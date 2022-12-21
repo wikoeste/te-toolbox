@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
-import re, json
+import re, json, ipaddress
 from liono import main as loader
 from liono.common import settings
 settings.init()
@@ -170,6 +170,66 @@ def talosjiratickets():
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+@app.route('/talosjiraampbp')
+def talosjiraampbp():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
+        getTickets.jira("ampbp",True,session['pw'],settings.que)
+        if settings.filedata is not None:
+            csvtohtml.writedata(True)
+            csvtohtml.htmloutput(settings.htmlfname)
+            for q in settings.que.queue:
+                print(q.table)
+            return render_template('assigned.html')
+        else:
+            return render_template('error.html')
+@app.route('/talosjiraops')
+def talosjiraops():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
+        getTickets.jira("ops",True,session['pw'],settings.que)
+        if settings.filedata is not None:
+            csvtohtml.writedata(True)
+            csvtohtml.htmloutput(settings.htmlfname)
+            for q in settings.que.queue:
+                print(q.table)
+            return render_template('assigned.html')
+        else:
+            return render_template('error.html')
+@app.route('/talosjiraeers')
+def talosjiraeers():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
+        getTickets.jira("eers",True,session['pw'],settings.que)
+        if settings.filedata is not None:
+            csvtohtml.writedata(True)
+            csvtohtml.htmloutput(settings.htmlfname)
+            for q in settings.que.queue:
+                print(q.table)
+            return render_template('assigned.html')
+        else:
+            return render_template('error.html')
+@app.route('/retengjira')
+def retengjira():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
+        getTickets.jira("ret",True,session['pw'],settings.que)
+        if settings.filedata is not None:
+            csvtohtml.writedata(True)
+            csvtohtml.htmloutput(settings.htmlfname)
+            for q in settings.que.queue:
+                print(q.table)
+            return render_template('assigned.html')
+        else:
+            return render_template('error.html')
 
 @app.route('/umbrjiratickets/') # get tickets from talos jira instance for the user
 def umbrjiratickets():
@@ -191,7 +251,7 @@ def umbrjiratickets():
 def getelastic():
     flag = "juno"
     if request.method   == 'POST':
-        # print(request.values)
+        print(request.values)
         # run the associated elastic query
         if request.form.get('username') == settings.uname:
             q.submissions(settings.uname+"@cisco.com")
@@ -199,7 +259,7 @@ def getelastic():
         elif re.search(r'[A-Fa-f0-9]{64}', request.form.get('sha256')):
             flag = "juno2" # sha256
             q.sha256(request.form.get('sha256'))
-        elif re.search('r^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$',request.form.get('ip')):
+        elif ipaddress.ip_address(request.form.get('ip')):
             flag = "juno3" # senderip
             q.senderip(request.form.get('ip'))
         elif re.search(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', request.form.get('sender')):
@@ -242,19 +302,16 @@ def bzsearchresults():
 def getrj():
     if request.method == 'POST':
         #print(request.values)
-        #cid  = request.form.get('cid')
-        #print(cid)
-        text        = request.form['cid']
-        frmtedtext  = text
-        frmtedtext  = frmtedtext.replace("\r",'')
-        frmtedtext  = frmtedtext.replace(" ", "")
-        cidlist     = frmtedtext.split("\n")
-        cids        = [i for i in cidlist if i.strip()]
-        for cid in cids:
-            sherlock.reinjection(cid,settings.uname,settings.sherlockKey,settings.que)
-            flag = "rj"
-            csvtohtml.writedata(flag)
-            csvtohtml.htmloutput(settings.rjresultshtml)
+        cids  = request.form.getlist('cid')
+        cids  = [x.replace("\"","'") for x in cids]
+        cids = [x.replace('\r\n', '","') for x in cids]
+        #print(type(cids))
+        #print(cids)
+        #for cid in cids:
+        sherlock.reinjection(cids,settings.uname,settings.sherlockKey,settings.que)
+        flag = "rj"
+        csvtohtml.writedata(flag)
+        csvtohtml.htmloutput(settings.rjresultshtml)
         settings.guidconvert.clear()  # empty dict
         guidconvert = {"cid": [], "date": "", "rj": [], "esascores": [], 'corpscores': [], 'rjscores': [], 'sbrs': []}
         return (render_template('rjresults.html'))
