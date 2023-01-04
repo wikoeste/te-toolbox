@@ -12,13 +12,13 @@
           </button>
           <div class="dropdown-content">
             <a href={{url_for("runscript")}}>Get Ticket Data</a>
-            <a href={{url_for("assigned")}}> My Assigned</a>
-            <a href={{url_for("unassigned")}}>Unassigned</a>
+            <a href={{url_for("assignedtickets")}}>Get My Assigned</a>
+            <a href={{url_for("unassignedtickets")}}>All Unassigned</a>
             <a href={{url_for("getacetix")}}>Analyst Console</a>
             <a href={{url_for("talosjiratickets")}}>Talos-Jira-All</a>
             <a href={{url_for("talosjiraeers")}}>Talos-Jira-EERS</a>
             <a href={{url_for("talosjiraampbp")}}>Talos-Jira-AMPBP</a>
-            <a href={{url_for("talosjiraops")}}>Talos-Jira-TalosOps</a>
+            <a href={{url_for("talosjiraops")}}>Talos-Jira-Ops</a>
             <a href={{url_for("retengjira")}}>Eng/RET-Jira-Efficacy</a>
             <a href={{url_for("umbrjiratickets")}}>Umbrella-Jira</a>
           </div>
@@ -98,7 +98,8 @@
       </div>
 
       <div class="tiles tile thover">
-          <a href="https://fmd-tepot-01tst.vrt.sourcefire.com/" target="_blank">
+         <a href="https://ava-tepot-01prd.vrt.sourcefire.com/" target="_blank">
+          <!--https://fmd-tepot-01tst.vrt.sourcefire.com/"-->
               <img alt="tea" src="../static/imgs/tea.png"
                    height="200"></a>
             <div class="caption ">TEA GUI</div>
@@ -119,7 +120,7 @@
           <div class="caption">Talos Reputation</div>
       </div>
 
-    <!--iframes for backlog and lang acronyms
+    <!--iframes for backlog and lang acronyms-->
     <div class="frames">
         <div class="framtile">
           <h2>IPAS Lang Acronyms</h2>
@@ -130,8 +131,8 @@
          <iframe src={{url_for("backlogbuddy")}}></iframe>
          </div>
     </div>
-    -->
     </body>
+
     <!--Footer section-->
     <div class="footer">
       <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>

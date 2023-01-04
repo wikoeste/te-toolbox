@@ -15,8 +15,6 @@ from liono.common.sbjat import sbjat as sbrs
 ####
 app = Flask(__name__)
 app.secret_key = '3R!n7665'
-###Global session vars
-cecpw = ''
 
 @app.route('/') #index
 def home():
@@ -51,7 +49,6 @@ def elasticqueries():
 
 @app.route('/unassigned')
 def unassigned():
-    #shutil.copyfile('/Users/wikoeste/unassigned.html', './templates/unassigned.html')
     return render_template('unassigned.html')
 
 @app.route('/assigned')
@@ -61,6 +58,7 @@ def assigned():
 @app.route('/acetickets')
 def acetickets():
     return render_template('acetickets.html')
+# END WEB TEMPLATES
 
 #Tools
 @app.route('/cmdtool')
@@ -74,7 +72,7 @@ def bzsearch():
 @app.route('/reinjection')
 def reinjection():
     return render_template('/reinjectionform.html')
-
+#END TOOLS
 
 #<!--Login & Logout Page for scripts-->
 @app.route('/login', methods = ['POST', 'GET'])
@@ -87,9 +85,9 @@ def login():
         #settings.umbrella = umbrella
         session['username'] = username
         session['pw']       = password
-        cecpw               = password
+        settings.cec        = password
         if username == settings.uname:
-            loader.main() # run que searches
+            loader.main(session['pw']) # run que searches
             return redirect('/assigned')
         else:
             return "<h1>Wrong username or password</h1>\n" \
@@ -107,31 +105,35 @@ def logout():
    session.pop('username', None)
    return redirect(url_for('login'))
 
-#<!--Scripts executed below-->
+# Ticket Queue actions
+# Get tix from jira and bz
+# Assign tix
+# Resolve tix
+
 @app.route('/runscript/') # get the ticket data for user
 def runscript():
     if 'username' not in session:
         return render_template('login.html')
     else:
-        loader.main()  # run que searches
+        loader.main(session['pw'])  # run que searches
         return render_template('assigned.html')
 
 @app.route('/takescript', methods = ['POST','GET']) # assign tickets
-def takescript(): # assign ticketsmpty
+def takescript(): # assign tickets
     # print(request.method)
     print(request.values)
     if request.method == 'POST':
         jsondata = request.json
-        print(jsondata)
+        #print(jsondata)
         selected = request.form.getlist('checks')
         print('the list of tix are {}'.format(selected))
         if selected != "":
             for i in selected:
                 assignTickets.assignque(i)
-        getTickets.unassigned()  # get the new unassigned tickets after taking one from the list
+        getTickets.unassigned(session['pw'])  # get the new unassigned tickets after taking one from the list
         return redirect('/unassigned') # reload the unassigned paged
-    else:
-        return render_template('/takeresults.html') # this should be an error page!
+    else: # fail to assign generate error
+        return render_template('/assignerror.html') 
 
 @app.route('/bulkresolve', methods = ['POST']) # close cases
 def bulkresolve():
@@ -145,15 +147,31 @@ def bulkresolve():
         if selected != "":
             for i in selected:
                 assignTickets.resolveclose(i)
-            loader.main()  # run que searches
+            loader.main(session['pw'])  # run que searches
             return redirect('/assigned')  # reload the unassigned paged
     else:
-        return render_template('/takeresults.html')  # this should be an error page
+        return render_template('/assignerror.html')  # this should be an error page
 
 @app.route('/getacetix')
 def getacetix():
     aceqrys.get_ace_dispute()
     return render_template('/acetickets.html')
+
+@app.route('/assignedtickets') # get tickets from talos jira instance for the user
+def assignedtickets():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        loader.main(session['pw'])  # run que searches
+        return render_template('assigned.html')
+
+@app.route('/unassignedtickets')
+def unassignedtickets():
+    if 'username' not in session:
+        return redirect('notloggedin.html')
+    else:
+        getTickets.unassigned(session['pw'])
+        return redirect('/unassigned')
 
 @app.route('/talosjiratickets') # get tickets from talos jira instance for the user
 def talosjiratickets():
@@ -161,92 +179,86 @@ def talosjiratickets():
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira(settings.talosjira,True,session['pw'],settings.que)
+        getTickets.jira("all",True,session['pw'])
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+        
 @app.route('/talosjiraampbp')
 def talosjiraampbp():
     if 'username' not in session:
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira("ampbp",True,session['pw'],settings.que)
+        getTickets.jira("ampbp",True,session['pw'])
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+        
 @app.route('/talosjiraops')
 def talosjiraops():
     if 'username' not in session:
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira("ops",True,session['pw'],settings.que)
+        getTickets.jira("ops",True,session['pw'])
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+        
 @app.route('/talosjiraeers')
 def talosjiraeers():
     if 'username' not in session:
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira("eers",True,session['pw'],settings.que)
+        getTickets.jira("eers",True,session['pw'])
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+        
 @app.route('/retengjira')
 def retengjira():
     if 'username' not in session:
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira("ret",True,session['pw'],settings.que)
+        getTickets.jira("ret",True,session['pw'])
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
-
-@app.route('/umbrjiratickets/') # get tickets from talos jira instance for the user
+        
+@app.route('/umbrjiratickets/') 
 def umbrjiratickets():
     if 'username' not in session:
         return redirect('notloggedin.html')
     else:
         settings.filedata = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
-        getTickets.jira(settings.umbjira,True,"S0urc3f1r3!",settings.que)
+        getTickets.jira(settings.umbjira,True,"S0urc3f1r3!")
         if settings.filedata is not None:
             csvtohtml.writedata(True)
             csvtohtml.htmloutput(settings.htmlfname)
-            for q in settings.que.queue:
-                print(q.table)
             return render_template('assigned.html')
         else:
             return render_template('error.html')
+#END JIRA  Queues
 
+# Search tools and web scripts
 @app.route('/getelastic', methods = ['POST']) # juno qrs
 def getelastic():
     flag = "juno"
@@ -259,12 +271,15 @@ def getelastic():
         elif re.search(r'[A-Fa-f0-9]{64}', request.form.get('sha256')):
             flag = "juno2" # sha256
             q.sha256(request.form.get('sha256'))
-        elif ipaddress.ip_address(request.form.get('ip')):
-            flag = "juno3" # senderip
-            q.senderip(request.form.get('ip'))
         elif re.search(r'^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w{2,3}$', request.form.get('sender')):
             flag = "juno4" # senderemail
             q.senderemail(request.form.get('sender'))
+        elif request.form.get('subj') is not None:
+            flag = "juno5"
+            q.subject(request.form.get('subj'))
+        elif ipaddress.ip_address(request.form.get('ip')):
+            flag = "juno3" # senderip
+            q.senderip(request.form.get('ip'))
         else:
             q.fromdomain(request.form.get('domain'))
         csvtohtml.writedata(flag)
@@ -308,7 +323,7 @@ def getrj():
         #print(type(cids))
         #print(cids)
         #for cid in cids:
-        sherlock.reinjection(cids,settings.uname,settings.sherlockKey,settings.que)
+        sherlock.reinjection(cids,settings.uname,settings.sherlockKey,)
         flag = "rj"
         csvtohtml.writedata(flag)
         csvtohtml.htmloutput(settings.rjresultshtml)

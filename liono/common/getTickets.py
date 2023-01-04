@@ -1,16 +1,14 @@
 from liono.common import settings
 from liono.common import csvtohtml
-import requests,json,re,textwrap,datetime,threading,csv,os
+import requests,re,textwrap,threading,os,json
 requests.packages.urllib3.disable_warnings()
-from terminaltables import AsciiTable, SingleTable
-from jira import JIRA
 
 def noresults():
     settings.filedata["Link"].clear()
     settings.filedata["Description"].clear()
     settings.filedata["DateOpened"].clear()
 
-def bugzilla(flag,q):
+def bugzilla(flag):
     ids, reporturls, summs, dateopened, shrtsums, lastmodified = ([], [], [], [], [], [])
     if flag is True:
         params = {'product':'Escalations','assigned_to': settings.uname, 'status':['new','reopened'], 'api_key': settings.bzKey}
@@ -19,6 +17,7 @@ def bugzilla(flag,q):
     resp = requests.get(settings.bugzilla, params=params, verify=False)
     if resp.status_code == 200:
         jresp = resp.json()
+        print("BZ API success found a total of: {}".format(len(jresp['bugs'])))
         #print("BZ API Search", json.dumps(jresp, indent=2))
         for i in jresp['bugs']:
             if i['is_open'] == True:
@@ -39,78 +38,56 @@ def bugzilla(flag,q):
             for x in summs:
                 short = textwrap.shorten(x, width=75, placeholder="[...]")
                 shrtsums.append(short)
-                smry = "\n".join(shrtsums)
-                # configure BZ Search tables
-                data = [
-                    ["ID","BZ-Link","Summary","Date Created","Last Modified"],
-                    [bugs,urls,smry,dates,mod],
-                ]
-            bzResults = AsciiTable(data, "Bugzilla Case Search Results")
-            q.put(bzResults)  # put result in que for printing
+            smry = "\n".join(shrtsums)
             settings.filedata["ID"].append(ids)
             settings.filedata["Link"].append(reporturls)
             settings.filedata["Description"].append(shrtsums)
             settings.filedata["DateOpened"].append(dateopened)
             settings.filedata["LastModified"].append(lastmodified)
-        else:
-            bzResults = AsciiTable([["No Open Tickets"]], "Bugzilla Case Search Results")
-            q.put(bzResults)  # put result in que for printing
-            #noresults()
-        print(bzResults.table)
+        else: #noresults()
+            print("No BZ Tickets found")
     else:
         error = ("BZ HTTP API ERROR {}".format(resp.status_code))
-        data = [["Bugzilla Tickets", "Error"],["None Found", error]]
-        bzResults = AsciiTable(data, "Bugzilla Ticket Search")
-        q.put(bzResults)  # put result in que for printing
-        #noresults()
-        print(bzResults.table)
+        print(error)
 
-def jira(url,flag,pw,q):
+def jira(url,flag,pw):
+    #print("DEBUG pw==> "+pw)
+    tix, jid, descs, smrys, created, urls, lastmod = ([], [], [], [], [], [], [])
     jql       = None
     match     = re.findall('j.+?\/', url)
     ticketq   = re.sub('\/', '', str(match))
-    #jql      = "?jql=assignee = "+ settings.uname + " and resolution = Unresolved order by updated DESC"
-    headers  = {'Content-type': 'application/json'}
-    fields   = "&fields=description,summary,created,assignee,reporter,updated"
-    tix,jid,descs,smrys,created,urls,lastmod = ([],[],[],[],[],[],[])
-    print("DEBUG===>>ticketq"+ticketq)
-    print("DEBUG===>>url"+url)
-    rqurl  = url
+    headers   = {'Content-type': 'application/json'}
+    fields    = "&fields=description,summary,created,assignee,reporter,updated"
+    api       = "https://jira.talos.cisco.com/browse/"
+    rqurl = "https://jira.talos.cisco.com/rest/api/2/search"
     if flag == True:
-        if "umbrella" in ticketq:
-            jql     = "?jql=reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
-            api     = "https://jira.it.umbrella.com/browse/"
-        elif "talos" in ticketq and "talos" in url:
+        if "umbrella" in ticketq: # get my umbrella jira escalations
+            jql   = "?jql=reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
+            rqurl = settings.umbjira
+            api   = "https://jira.it.umbrella.com/browse"
+        elif "all" in url: # get all my open tickets in talos jira
             jql = "?jql=project in(COG,EERS,WEB,AMPBP,TALOSOPS) and (reporter="+settings.uname+" or assignee="+settings.uname+") and resolution = Unresolved order by updated DESC"
-            api     = "https://jira.talos.cisco.com/browse/"
-        elif "amp" in ticketq or "amp" in url:
+        elif "amp" in ticketq or "amp" in url: # get my amp bp escalations
             jql     = "?jql=project=AMPBP and (reporter="+settings.uname+") and resolution = Unresolved order by updated DESC"
-            api     = "https://jira.talos.cisco.com/browse/"
-            rqurl  =  "https://jira.talos.cisco.com/rest/api/2/search"
-        elif "ops" in ticketq or "ops" in url:
-            jql     = "?jql=project=TALOSOPS and reporter="+settings.uname+" and resolution = Unresolved"
-            api     = "https://jira.talos.cisco.com/browse/"
-            rqurl   = "https://jira.talos.cisco.com/rest/api/2/search"
-        elif "ret" in ticketq or "ret" in url:
-            jql     = "?jql=project=EFFICACY and reporter="+settings.uname+" and resolution = Unresolved"
+        elif "ops" in ticketq or "ops" in url: # get my talos ops tickets
+            jql     = "?jql=project=TALOSOPS and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
+        elif "ret" in ticketq or "ret" in url: # get my ret-eng/effifcayc escalations
+            jql     = "?jql=project=EFFICACY and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
             api     = "https://jira-eng-rtp3.cisco.com/"
             rqurl    = settings.engjira
-        elif "eers" in url:
-            print('in eers elif')
-            jql     = "?jql=project=EERS and reporter="+settings.uname+" and resolution = Unresolved"
-            api     = "https://jira.talos.cisco.com/browse/"
-            rqurl   = "https://jira.talos.cisco.com/rest/api/2/search"
-        else:
-            jql     = '?jql=assignee='+settings.uname+' AND statusCategory not in (Done)'
-            api     = "https://jira.sco.cisco.com/browse/"
-    else:
-        jql = '?jql=project=COG and assignee in (EMPTY)'
-        api = "https://jira.sco.cisco.com/browse/"
-    print("DEBUG==> " +rqurl)
+        elif "eers" in url: # get my eers escalations
+            jql     = "?jql=project=EERS and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
+        else: # get my assigned tickets
+            jql     = "?jql=project=COG and assignee in ("+settings.uname+") AND status in (Open, Reopened, 'Pending Reporter', 'COG Investigating', 'Pending 3rd Party') order by updated DESC"
+    else: # Get all unaasigined jira tickets in the COG queue/project
+        jql = '?jql=project=COG and assignee in (EMPTY) order by updated DESC'
+    #print("DEBUG==> " +rqurl)
+    #print("DEBUG==> " +settings.uname)
     resp = requests.get(rqurl+jql+fields, headers=headers,auth=(settings.uname,pw), verify=False)
     if resp.status_code == 200:
         jresp = resp.json()
-        #print(url, json.dumps(jresp, indent=2))
+        print("JIRA API JSON Success!")
+        #print(json.dumps(jresp, indent=2))
         if len(jresp['issues']) > 0:
             for i in jresp['issues']:
                 tix.append(i['key'])
@@ -122,8 +99,7 @@ def jira(url,flag,pw,q):
                 frmtdesc = re.sub("r'\s+", ' ', frmtdesc)
                 frmtsmry = re.sub(',',' ', smry)
                 frmtsmry = re.sub("r'\s+", ' ', frmtsmry)
-                #frmtdesc = desc.translate(str.maketrans(' ', ' ', '\n\t\r'))
-                #frmtsmry = smry.translate(str.maketrans(' ', ' ', '\n\t\r'))
+
                 descs.append(frmtdesc)
                 smrys.append(frmtsmry)
                 datefrmt = re.sub("T.+", "", i['fields']['created'])
@@ -139,26 +115,20 @@ def jira(url,flag,pw,q):
             datecreated = "\n".join(i for i in created)
             dateupdated = "\n".join(i for i in lastmod)
             links       = "\n".join(i for i in urls)
-            data = [
-                ["Ticket","Summary","Date Opened","Last Updated"],
-                [links,summarys,datecreated,dateupdated],
-            ]
-            results = AsciiTable(data, ticketq)
+
             settings.filedata["ID"].append(tix)
             settings.filedata["Link"].append(urls)
             settings.filedata["Description"].append(smrys)
             settings.filedata["DateOpened"].append(created)
             settings.filedata["LastModified"].append(lastmod)
         else:
-            data = [[url,"No Open Tickets"]]
-            results = AsciiTable(data, ticketq)
+            results = "No Open Jira COG Tickets"
+            print(results)
     else:
-        error = ("HTTP ERROR {}".format(resp.status_code))
-        data = [[url,error]]
-        results = AsciiTable(data, ticketq)
-    q.put(results)
+        error = ("Jira Talos API HTTP ERROR {}".format(resp.status_code))
+        print(error)
 
-def unassigned():
+def unassigned(pw):
     threads = []
     # clear assigned ticket data from dictionary
     settings.filedata.clear()
@@ -166,8 +136,8 @@ def unassigned():
     # Show unassigned tickets in jira, bugzilla
     flag = False
     # Show unassigned tickets in jira, bugzilla, and ace
-    t1 = threading.Thread(target=bugzilla, args=(flag,settings.que,))
-    t2 = threading.Thread(target=jira, args=(settings.tejira, flag, settings.cec, settings.que))
+    t1 = threading.Thread(target=bugzilla, args=(flag,))
+    t2 = threading.Thread(target=jira, args=(settings.talosjira, flag, pw))
     threads.append(t1)
     threads.append(t2)
     for t in threads:

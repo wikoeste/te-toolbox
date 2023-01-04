@@ -4,7 +4,7 @@ import mysql.connector
 def htmltable(data):
     homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</>' \
                '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>\n'
-    print(data)
+    #print(data)
     fileout = open(settings.acehtml, "w")
     table = "<table>\n"
     # Create the table's column headers
@@ -125,9 +125,9 @@ def get_ace_dispute():
         sdrrecords  = cursor.fetchall()
         unassigned  = len(webrecords) + len(filerecords) + len(sdrrecords)
         print("Re-Opened Tickets {}".format(unassigned))
+        print("================")
         data.append("Re-Opened Tickets:{}".format(unassigned))
         for row in webrecords:
-            # print(row[0])
             webid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/" + str(
                 webid) + " target=_blank>" + str(webid) + "</a>")
@@ -153,9 +153,9 @@ def get_ace_dispute():
         sdrrecords      = cursor.fetchall()
         unassigned = len(webrecords)+len(filerecords)+len(sdrrecords)
         print("Total Unassigned tickets {}".format(unassigned))
+        print("================")
         data.append("All Unassigned ACE tickets:{}".format(unassigned))
         for row in webrecords:
-            #print(row[0])
             webid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/"+str(webid)+" target=_blank>"+str(webid)+"</a>")
         for row in filerecords:

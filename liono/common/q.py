@@ -202,6 +202,34 @@ def senderip(ip): # 12 months max 50 results
     except requests.ConnectionError as e:
         print("ERROR Reaching Juno server!")
 
+def subject(subjstr):
+    qry = '{"size":10,"_source":["message_id","@timestamp","ipas.ingest.spam_score","category"],' \
+          '"query":{"term":{"subject.raw":"' + subjstr  + '"}}}'
+    headers = {'Content-type': 'application/json'}
+    total = 0
+    try:
+        response = requests.get(settings.juno+"juno_past_12_months/_search?", headers=headers,data=qry, \
+            auth=(settings.uname,settings.junoKey),verify=False, timeout=120, stream=True)
+        if response.status_code == 200:
+            jresult = response.json()
+            print(json.dumps(jresult, indent=2))
+            total = jresult['hits']['total']['value']
+            if total > 0:
+                # print(json.dumps(jresult, indent=2))
+                for i in jresult["hits"]["hits"]:
+                    settings.elasticqrys["cids"].append(i["_id"])
+                    settings.elasticqrys.update({"scores":str(round(i["_source"]["ipas.ingest.spam_score"], 2))})
+                    settings.elasticqrys["cats"].append(i["_source"]["category"])
+                    sampletime = i["_source"]["@timestamp"]
+                    settings.elasticqrys.update({"timestamps":sampletime})
+            else:
+                settings.elasticqrys["cids"].append("None")
+                settings.elasticqrys["cats"].append("--")
+        else:
+            print("Error HTTP {}".format(response.status_code))
+    except requests.ConnectionError as e:
+        print("ERROR Reaching Juno server!")
+
 def timeconverter(timestamp):
     p = '%Y-%m-%dT%H:%M:%S.%fZ'
     #mytime = "2009-03-08T00:27:31.807Z"

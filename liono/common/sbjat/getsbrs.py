@@ -7,8 +7,8 @@ from terminaltables import AsciiTable
 requests.packages.urllib3.disable_warnings()
 
 def ticketdata(ticket,cecpw):
-    ticketurl = "https://jira.sco.cisco.com/browse/{}".format(ticket)
-    jiraAPI = "https://jira.sco.cisco.com/rest/api/2/search?jql=key={}".format(ticket)
+    ticketurl = "https://jira.talos.cisco.com/browse/{}".format(ticket)
+    jiraAPI = "https://jira.talos.cisco.com/rest/api/2/search?jql=key={}".format(ticket)
     fields = "&fields=description,summary,created,assignee,reporter,resolutiondate,customfield_12385"
     headers = {'Content-type': 'application/json'}
     response = requests.get(jiraAPI+fields, headers=headers, auth=(settings.uname, cecpw), verify=False)

@@ -26,7 +26,7 @@ def assignque(ticket):
         else:
             return results
 def jira(ticket):
-    options = {"server": "https://jira.sco.cisco.com"}
+    options = {"server": "https://jira.talos.cisco.com"}
     jira = JIRA(basic_auth=(settings.uname, settings.cec), options=options)
     issue = jira.issue(ticket)
     jira.assign_issue(ticket, settings.uname)
@@ -39,7 +39,7 @@ def jira(ticket):
 def comment(ticket):
     template = "I have taken ownership of this ticket and will investigate the issue shortly. \
         I will update the ticket once the analysis is complete. Thank you."
-    options = {"server": "https://jira.sco.cisco.com"}
+    options = {"server": "https://jira.talos.cisco.com"}
     jira = JIRA(basic_auth=(settings.uname, settings.cec), options=options)
     issue = jira.issue(ticket)
     comment = jira.add_comment(ticket, template)
@@ -48,7 +48,7 @@ def comment(ticket):
 def resolveclose(ticket):
     hdrs  = {'Content-type': 'application/json'}
     if "COG" in ticket:
-        options = {"server": "https://jira.sco.cisco.com"}
+        options = {"server": "https://jira.talos.cisco.com"}
         jira = JIRA(basic_auth=(settings.uname, settings.cec), options=options)
         issue = jira.issue(ticket)
         transitions = jira.transitions(issue)
@@ -72,7 +72,7 @@ def resolveclose(ticket):
             print("BZ API comment POST results", json.dumps(jresp, indent=2))
         else:
             err = ("BZ API Error closing case {}".format(response.status_code))
-            return err
+            print(err)
     else:
         print("invalid ticket, ", +ticket)
 def bzticket(bugid): # auto assign and comment bz tickets

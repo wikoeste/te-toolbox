@@ -1,7 +1,7 @@
-import getpass,re,os.path,queue,datetime
+import getpass,re,os.path,datetime
 # Global vars inititialized
 def init():
-    global uname,cec,umb,bzKey,que,umbjira,talosjira,tejira,lastninety,elasticqrys
+    global uname,cec,umb,bzKey,umbjira,talosjira,lastninety,elasticqrys
     global bugzilla,filedata,csvfname,rj,sherlockKey
     global htmlfname,homedir,templatespath,fname,junoKey,juno,que,results,guidconvert
     global acedbhost,acedatabase
@@ -28,11 +28,9 @@ def getKey(keyname):
                 match = l
     key = re.sub(r'.*=','',match) # remove key name and = sign
     key = re.sub(r'"','',key) # remove quotes from keys
-    print(key)
+    #print(key)
     return key
-
 # Setting global vars
-que = queue.Queue()
 cec                 = ''
 uname               = getpass.getuser()
 fname,homedir       = gethome()
@@ -50,7 +48,6 @@ lastseven           = datetime.datetime.now() - datetime.timedelta(7)
 # ticket web urls
 umbjira             = "https://jira.it.umbrella.com/rest/api/2/search"
 talosjira           = "https://jira.talos.cisco.com/rest/api/2/search"
-tejira              = "https://jira.sco.cisco.com/rest/api/2/search"
 bugzilla            = "https://bugzilla.vrt.sourcefire.com/rest/bug"
 ace                 = "https://analyst-console.vrt.sourcefire.com"
 engjira             = "https://jira-eng-rtp3.cisco.com/rest/api/2/search"
@@ -58,7 +55,6 @@ engjira             = "https://jira-eng-rtp3.cisco.com/rest/api/2/search"
 filedata            = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
 elasticqrys         = {"cids":[],"cats":[]}
 guidconvert         = {"cid":[],"date":"","rj":[],"esascores":[],'corpscores':[],'rjscores':[],'sbrs':[]}
-#bzsearchresults    = [{'bugs':'','smry':'','stats':'','opened':'','owner':''}]
 bzsearchresults     = {}
 sbjatresults        = {"tickets":[],"date":[],"scores":[],"hits":[]}
 # file names

@@ -3,17 +3,16 @@ from jira import JIRA
 from liono.common.sbjat import boilerplates as responses
 
 def assign(ticket, cecpw):
-    options     = {"server": "https://jira.sco.cisco.com"}
+    options     = {"server": "https://jira.talos.cisco.com"}
     jira        = JIRA(basic_auth=(settings.uname, cecpw), options=options)
     issue       = jira.issue(ticket)
     jira.assign_issue(ticket, settings.uname)
     #priority    = issue.fields.priority.name
     # issue.update(priority={'name': 'P4'}) # set to a p4
 
-
 def comment(ticket,data,rules,scr,ip,cecpw):
     #ticket = 'COG-53664'
-    options = {"server": "https://jira.sco.cisco.com"}
+    options = {"server": "https://jira.talos.cisco.com"}
     jira = JIRA(basic_auth=(settings.uname, cecpw), options=options)
     comment = jira.add_comment(ticket, str(data), visibility={'type': 'role', 'value': 'Project Developer'})  # private comment
     # comment.delete()
@@ -24,32 +23,51 @@ def comment(ticket,data,rules,scr,ip,cecpw):
     if float(scr) >= -1.9:
         jira.add_comment(ticket, ip +": " + responses.bp["recovered"])
         return 1
-    elif "IaM" and "DhM" in rules:
+    elif "IaM" and "DhM" or "Rs" and "Rh" in rules:
         print(True)
         jira.add_comment(ticket,ip +": " + responses.bp["iadh"])
         return 1
     elif "Gry" in rules:
         jira.add_comment(ticket,ip +": " +  responses.bp["grey"])
         return 2
-    elif "Sbl" in rules:
+    elif "Cbl" or "Pbl" or "Sbl" or "Css" in rules:
         jira.add_comment(ticket,ip +": " + responses.bp["spamhaus"])
         return 1
-    elif "Pbl" in rules:
-        jira.add_comment(ticket, ip + ": " + responses.bp["spamhaus"])
-        return 1
-    elif "Cp1" in rules :
+    elif "Ce" or "Ve" in rules:
+        # private comment
+        jira.add_comment(ticket, ip + ": " + "IP listed in http://enemieslist.com/classifications/",
+            visibility={'type': 'role', 'value': 'Project Developer'})
+        return 2
+    elif "Cp1" or "Cp2" or "Vp1" or "Vp2" in rules:
         jira.add_comment(ticket, ip + ": " + responses.bp["cp1"])
         return 1
+    elif "Ivn" or "Ivm":
+        # private comment
+        jira.add_comment(ticket, ip + ": " + "listed on Invalument: https://www.invaluement.com/",
+            visibility={'type': 'role', 'value': 'Project Developer'})
+        return 2
+    elif "Vu" or "Cu" in rules:
+        # private comment
+        jira.add_comment(ticket, ip + ": " + "a domain associated with this IP are listed in the URIDB feed.",
+            visibility={'type': 'role', 'value': 'Project Developer'})
+        return 2
+    elif "Rtm" in rules:
+        # private comment
+        jira.add_comment(ticket, ip + ": " + "is blocked by a Reptool entry",
+            visibility = {'type': 'role', 'value': 'Project Developer'})
+        return 2
     elif float(scr) <= -2.0:
-        jira.add_comment(ticket,"Your IP, {}".format(ip)+ " has a malicious score {}".format(scr)+" due to the following known rules: {}".format(rules),
+        jira.add_comment(ticket,"Your IP, {}".format(ip)+ " has a malicious score {}".format(scr)+
+                " due to the following known rules: {}".format(rules),
                 visibility = {'type': 'role', 'value': 'Project Developer'}) # private comment
         return 2
     else:
-        jira.add_comment(ticket, scr +","+rules, visibility={'type': 'role', 'value': 'Project Developer'}) # private comment
+        # private comment
+        jira.add_comment(ticket, scr +","+rules, visibility={'type': 'role', 'value': 'Project Developer'})
         return 2
 
 def resolveclose(ticket,flag):
-    options = {"server": "https://jira.sco.cisco.com"}
+    options = {"server": "https://jira.talos.cisco.com"}
     jira = JIRA(basic_auth=(settings.uname, settings.cec), options=options)
     issue = jira.issue(ticket)
     transitions = jira.transitions(issue)

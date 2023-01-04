@@ -51,6 +51,14 @@ def writedata(flag):
         dates = settings.elasticqrys['cats']
     elif flag == "juno4": #sender email
         hdrs = ["CIDS"]
+    elif flag == "juno5": # subject message search
+        hdrs = ["CIDS","Scores","Date","Category"]
+        msgid = settings.elasticqrys['cids']
+        categ = settings.elasticqrys['cats']
+        print(msgid)
+        if "cid" in msgid:
+            score = settings.elasticqrys['scores']
+            dates = settings.elasticqrys['timestamps']
     elif flag == "juno": # domains
         hdrs  = ["cid", "category"]
         msgid = settings.elasticqrys['cids']
@@ -98,6 +106,15 @@ def writedata(flag):
         elif flag == "juno3":  # sender ip
             for row in range(int(len(msgid))):
                 writer.writerow([msgid[row], dates[row]])
+        elif flag == "juno4":  # full senders email address
+            for row in range(int(len(msgid))):
+                writer.writerow([msgid[row], dates[row]])
+        elif flag == "juno5":  # subject of the message
+            for row in range(int(len(msgid))):
+                if "None" in str(msgid[0]):
+                    writer.writerow([msgid[row]])
+                else:
+                    writer.writerow([msgid[row], score[row], dates[row], categ[row]])
         elif flag == "juno":
             for row in range(int(len(msgid))):
                 writer.writerow([msgid[row],categ[row]])
@@ -152,7 +169,7 @@ def htmloutput(fname): # wrtite html file from the csv file
     filein = open(settings.csvfname, "r")
     fileout = open(fname, "w")
     data = filein.readlines()
-    print(data)
+    #print(data)
     if "unassigned" in fname:
         hdr = "Unassigned"
     elif "assigned" in fname:
