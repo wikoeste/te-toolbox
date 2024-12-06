@@ -1,5 +1,5 @@
-from liono.common import settings
-from liono.common import csvtohtml
+from liono.common import settings,csvtohtml
+from liono.logging import logger
 import requests,re,textwrap,threading,os,json
 requests.packages.urllib3.disable_warnings()
 
@@ -8,6 +8,8 @@ def noresults():
     settings.filedata["Description"].clear()
     settings.filedata["DateOpened"].clear()
 
+#Derecated as bugzilla was decommissioned in June 2024
+'''
 def bugzilla(flag):
     ids, reporturls, summs, dateopened, shrtsums, lastmodified = ([], [], [], [], [], [])
     if flag is True:
@@ -17,7 +19,7 @@ def bugzilla(flag):
     resp = requests.get(settings.bugzilla, params=params, verify=False)
     if resp.status_code == 200:
         jresp = resp.json()
-        print("BZ API success found a total of: {}".format(len(jresp['bugs'])))
+        logger.log("BZ API success found a total of: {}".format(len(jresp['bugs'])))
         #print("BZ API Search", json.dumps(jresp, indent=2))
         for i in jresp['bugs']:
             if i['is_open'] == True:
@@ -45,13 +47,13 @@ def bugzilla(flag):
             settings.filedata["DateOpened"].append(dateopened)
             settings.filedata["LastModified"].append(lastmodified)
         else: #noresults()
-            print("No BZ Tickets found")
+            logger.log("No BZ Tickets found")
     else:
         error = ("BZ HTTP API ERROR {}".format(resp.status_code))
-        print(error)
+        logger.log(error)
+'''
 
 def jira(url,flag,pw):
-    #print("DEBUG pw==> "+pw)
     tix, jid, descs, smrys, created, urls, lastmod = ([], [], [], [], [], [], [])
     jql       = None
     match     = re.findall('j.+?\/', url)
@@ -77,16 +79,18 @@ def jira(url,flag,pw):
             rqurl    = settings.engjira
         elif "eers" in url: # get my eers escalations
             jql     = "?jql=project=EERS and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
+        elif "sjc1" in ticketq or "sjc1" in url:
+            jql     = "?jql=project=CLAM and reporter=" + settings.uname + " and resolution = Unresolved order by updated DESC"
+        elif "thr" in ticketq or "thr" in url:
+            jql     = "?jql=project=THR and reporter=" + settings.uname + " and resolution = Unresolved order by updated DESC"
         else: # get my assigned tickets
             jql     = "?jql=project=COG and assignee in ("+settings.uname+") AND status in (Open, Reopened, 'Pending Reporter', 'COG Investigating', 'Pending 3rd Party') order by updated DESC"
     else: # Get all unaasigined jira tickets in the COG queue/project
         jql = '?jql=project=COG and assignee in (EMPTY) order by updated DESC'
-    #print("DEBUG==> " +rqurl)
-    #print("DEBUG==> " +settings.uname)
     resp = requests.get(rqurl+jql+fields, headers=headers,auth=(settings.uname,pw), verify=False)
     if resp.status_code == 200:
         jresp = resp.json()
-        print("JIRA API JSON Success!")
+        logger.log("JIRA API JSON Success!")
         #print(json.dumps(jresp, indent=2))
         if len(jresp['issues']) > 0:
             for i in jresp['issues']:
@@ -99,7 +103,6 @@ def jira(url,flag,pw):
                 frmtdesc = re.sub("r'\s+", ' ', frmtdesc)
                 frmtsmry = re.sub(',',' ', smry)
                 frmtsmry = re.sub("r'\s+", ' ', frmtsmry)
-
                 descs.append(frmtdesc)
                 smrys.append(frmtsmry)
                 datefrmt = re.sub("T.+", "", i['fields']['created'])
@@ -115,7 +118,6 @@ def jira(url,flag,pw):
             datecreated = "\n".join(i for i in created)
             dateupdated = "\n".join(i for i in lastmod)
             links       = "\n".join(i for i in urls)
-
             settings.filedata["ID"].append(tix)
             settings.filedata["Link"].append(urls)
             settings.filedata["Description"].append(smrys)
@@ -123,10 +125,11 @@ def jira(url,flag,pw):
             settings.filedata["LastModified"].append(lastmod)
         else:
             results = "No Open Jira COG Tickets"
-            print(results)
+            logger.log(results)
     else:
         error = ("Jira Talos API HTTP ERROR {}".format(resp.status_code))
         print(error)
+        logger.log(error)
 
 def unassigned(pw):
     threads = []
@@ -136,24 +139,25 @@ def unassigned(pw):
     # Show unassigned tickets in jira, bugzilla
     flag = False
     # Show unassigned tickets in jira, bugzilla, and ace
-    t1 = threading.Thread(target=bugzilla, args=(flag,))
+    #t1 = threading.Thread(target=bugzilla, args=(flag,))
     t2 = threading.Thread(target=jira, args=(settings.talosjira, flag, pw))
-    threads.append(t1)
+    #threads.append(t1)
     threads.append(t2)
     for t in threads:
         t.start()
         try:
             t.join()
         except Exception as e:
-            print("Error running thread...{}".format(e))
+            logger.log("Error running thread...{}".format(e))
     if settings.filedata is not None:
         csvtohtml.writedata(flag)
         csvtohtml.htmloutput(settings.unassigned)
         fileExists = os.path.exists(settings.unassigned)
-        print("The file, ", settings.unassigned + ",exists: {}".format(fileExists))
+        exists = ("The file, ", settings.unassigned + ",exists: {}".format(fileExists))
+        logger.log(exists)
     else:
-        print("No file data in filedata variables from settings")
-        print("Or some other error in csv creation")
+        err = ("No file data in filedata variables from settings\nOr some other error in csv creation")
+        logger.log(err)
     threads.clear()
     settings.filedata.clear()
     settings.filedata = {"ID":[],"Link": [], "Description": [], "DateOpened": [], "LastModified":[]}

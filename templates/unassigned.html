@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel='stylesheet' href = '{{ url_for('static', filename='css/main.css') }}'>
+<link rel='stylesheet' href = "{{ url_for('static', filename='css/main.css') }}">
 <h1 class='logo'>Unassigned</h1>
 </head>
 <body>
@@ -13,7 +13,7 @@ border-collapse: collapse;
 }
 </style>
 <table style='width:100%'>
-<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>
+<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>
   <tr>
     <th>Link</th>
     <th>Description</th>
@@ -21,16 +21,34 @@ border-collapse: collapse;
     <th>Assign</th>
   </tr>
   <tr>
-    <td><a href =https://jira.talos.cisco.com/browse/COG-62842 target=_blank>COG-62842</a></td>
-    <td>[FP] Proximus Netcentre ICT - IPAS - HAM sample</td>
-    <td>2023-01-04</td>
-    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-62842><label for=COG-62842>COG-62842</label><br></td>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76557 target=_blank>COG-76557</a></td>
+    <td>[FP] WNS GLOBAL SERVICES PVT LTD - IPAS - legit email is marked as spam</td>
+    <td>2024-12-06</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-76557><label for=COG-76557>COG-76557</label></td>
   </tr>
   <tr>
-    <td><a href =https://jira.talos.cisco.com/browse/COG-62841 target=_blank>COG-62841</a></td>
-    <td>[FP] FIRST SOURCE SOLUTIONS INC – IPAS – Legitimate message marked spam</td>
-    <td>2023-01-04</td>
-    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-62841><label for=COG-62841>COG-62841</label><br></td>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76555 target=_blank>COG-76555</a></td>
+    <td>[FP] AMBER ENTERPRISES INDIA PRIVATE LTD – WBRS – Good URL blocked</td>
+    <td>2024-12-06</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-76555><label for=COG-76555>COG-76555</label></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76554 target=_blank>COG-76554</a></td>
+    <td>[FP] IPSILAN NETWORKS– WBRS</td>
+    <td>2024-12-06</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-76554><label for=COG-76554>COG-76554</label></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76553 target=_blank>COG-76553</a></td>
+    <td>[FP] Umbrella - WBRS - Good URL Blocked</td>
+    <td>2024-12-06</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-76553><label for=COG-76553>COG-76553</label></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76552 target=_blank>COG-76552</a></td>
+    <td>[FN] C3 TO BE ASSIGNED CPR COMPANY- IPAS- Suspected Spam email</td>
+    <td>2024-12-06</td>
+    <td><form action=/takescript method=POST><input type=checkbox name=checks value=COG-76552><label for=COG-76552>COG-76552</label></td>
   </tr>
   <tr>
     <td></td>
@@ -40,11 +58,11 @@ border-collapse: collapse;
   </tr>
   <tr>
     <td>Total Opened</td>
-    <td>2</td>
+    <td>5</td>
   </tr>
   <tr>
     <td>Jira</td>
-    <td>2</td>
+    <td>5</td>
   </tr>
   <tr>
     <td>Bugzilla</td>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Bugzilla Search Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>Bugzilla API Search, faster results.</h1>
+</head>
+
+<body>
+    <p><a href="/layout">Home</a></p>
+    <div class="elasticform">
+    <form action="/bzsearchresults" method="POST">
+        <p>Quick Search Escalations & Research Bugs: <input type="text" name="quick"/><input type="submit" value="submit"></p>
+        <p>Summary Field (Last 90 days): <input type="text" name="smry"><input type="submit" value="submit"></p>
+    </form>
+    </div>
+
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

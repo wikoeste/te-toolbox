@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Replay Results</title>
+        <link rel='stylesheet' href = "../static/css/main.css">
+        <div class="navbar">
+            <h1>Snort Replay Results</h1>
+        </div>
+</head>
+<body>
+<p><a href="/layout">Home</a>|<a href="/uploadpcap">Upload</a>|<a href="/rulesearch">Search</a>|<a href="/replay">Replay</a> </p>
+
+<div class="alignment">
+    <div class="sversion">
+    <p>{{snortversion}}</p>
+    </div>
+    <div class="uneditedrule">
+    <p>Rule:</p>
+        <div class="solidborder">
+        <p>{{rule}}</p>
+        </div>
+    </div>
+</div>
+<!-- Pcap table data results-->
+<ul>
+<table>
+    <tr>
+        <th>PCAP DATA</th>
+    </tr>
+    {% for i in pcapdata %}
+    <tr>
+        <td>{{i}}</td>
+    </tr>
+    {% endfor %}
+</table>
+</ul>
+
+<!--Snort log data results-->
+    <ul>
+        <table>
+            <tr>
+                <th>SNORT LOG DATA</th>
+            </tr>
+            {% for r in results %}
+            <tr>
+                <td>{{r}}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </ul>
+</body>
+</html>

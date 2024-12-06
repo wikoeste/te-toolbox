@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rule Download</title>
+    <link rel='stylesheet' href = "../static/css/main.css">
+    <div class="navbar">
+        <h1>Rule Download Results</h1>
+    </div>
+</head>
+<body>
+<p><a href="/">Home | </a><a href="/delete">Delete Pcap</a > <a href="/filedownloads"> | Download</a><a href="/replay"> | Snort Replay</a><a href="/search"> | Rule Search</a></p>
+<p>Results: {{name}}</p>
+
+<ul>
+    {% for file in files %}
+    <li><a href="{{ url_for('download', filename=file) }}">{{ file }}</a></li>
+    {% endfor %}
+</ul>
+
+</body>
+<!--Footer section-->
+    <div class="footer">
+      <p>Copyright (c) 2023 wikoeste, Cisco Internal Use Only</p>
+    </div>
+</html>

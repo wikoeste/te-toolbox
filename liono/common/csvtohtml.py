@@ -71,9 +71,8 @@ def writedata(flag):
     elif flag =="rj":
         hdrs = ["CID"]
     elif flag == "sbjat":
-        hdrs    = ["Tickets", "Date", "Score", "Hits"]
+        hdrs    = ["Tickets", "Score", "Hits"]
         ids     = settings.sbjatresults['tickets']
-        date    = settings.sbjatresults['date']
         scores  = settings.sbjatresults['scores']
         hits    = settings.sbjatresults['hits']
     else: # loads the unassigned page with take ticket button and checkboxes
@@ -91,7 +90,7 @@ def writedata(flag):
         for i in ids:
             chkboxes = '<form action=/takescript method=POST>'\
                 '<input type=checkbox name=checks value='+i+'>' \
-                '<label for='+i+'>'+i+'</label><br>'
+                '<label for='+i+'>'+i+'</label>'#<br>'
             multi.append(chkboxes)
     #write csv file
     with open(settings.csvfname, 'w') as f:
@@ -150,10 +149,10 @@ def writedata(flag):
                 writer.writerow([i])
         elif flag == "sbjat":
             if "None" in ids[0] or len(ids) == 0:
-                writer.writerow(['None','None','N/A','N/A'])
+                writer.writerow(['None','None','N/A'])
             else:
                 for row in range(int(len(ids))):
-                    writer.writerow([ids[row],date[row],scores[row],hits[row]])
+                    writer.writerow([ids[row],scores[row],hits[row]])
         else: # write unassigned csv file
             for row in range(int(len(multi))):
                 writer.writerow([url[row],desc[row],date[row],multi[row]])
@@ -165,8 +164,12 @@ def writedata(flag):
 
 def htmloutput(fname): # wrtite html file from the csv file
     homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > ' \
-               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>\n'
-    filein = open(settings.csvfname, "r")
+               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>\n'
+    #print(fname)
+    if 'backlog' in fname:
+        filein = open('/Users/wikoeste/PycharmProjects/te1-webapp/static/backlogbuddy.csv', "r")
+    else:
+        filein = open(settings.csvfname, "r")
     fileout = open(fname, "w")
     data = filein.readlines()
     #print(data)
@@ -183,11 +186,13 @@ def htmloutput(fname): # wrtite html file from the csv file
         hdr = "Sherlock API Reinjection Results"
     elif "sbjat" in fname:
         hdr = "SBRS Jira Automation Tool - SBJAT"
+    elif "backlog" in fname:
+        hdr = "Backlog Buddy List"
     else:
         hdr = "Error Page"
     css = "<html>\n" \
           "<head>\n" \
-          "<link rel='stylesheet' href = '{{ url_for('static', filename='css/main.css') }}'>\n" \
+          "<link rel='stylesheet' href = \"{{ url_for('static', filename='css/main.css') }}\">\n" \
           "<h1 class='logo'>"+hdr+"</h1>\n" \
           "</head>\n" \
           "<body>"

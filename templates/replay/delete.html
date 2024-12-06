@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Pcap</title>
+        <link rel='stylesheet' href = "../static/css/main.css">
+        <div class="navbar">
+          <h1>Select the Packet Capture to Delete</h1>
+        </div>
+</head>
+<body>
+<p><a href="/">Home | </a><a href="/pigreplay">Pig Replay | </a><a href="/uploadpcap">Upload Pcap</a ><a href="/filedownloads"> | Download</a><a href="/replay"> | Snort Replay</></p>
+<ul>
+    {% for file in files %}
+    <li><a href="{{ url_for('delete', filename=file) }}">{{ file }}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>

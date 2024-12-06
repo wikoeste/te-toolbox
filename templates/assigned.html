@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel='stylesheet' href = '{{ url_for('static', filename='css/main.css') }}'>
+<link rel='stylesheet' href = "{{ url_for('static', filename='css/main.css') }}">
 <h1 class='logo'>Assigned</h1>
 </head>
 <body>
@@ -13,7 +13,7 @@ border-collapse: collapse;
 }
 </style>
 <table style='width:100%'>
-<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>
+<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>
   <tr>
     <th>Link</th>
     <th>Description</th>
@@ -22,18 +22,95 @@ border-collapse: collapse;
     <th>Bulk Resolve</th>
   </tr>
   <tr>
-    <td><a href=https://bugzilla.vrt.sourcefire.com/show_bug.cgi?id=2482976 target=_blank>2482976</a></td>
-    <td>[CUST][FP] Cisco - AMP - FP Report for[...]</td>
-    <td>2023-01-03</td>
-    <td>2023-01-04 11:55:43</td>
-    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=2482976><label for=2482976>2482976</label><br></td>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76558 target=_blank>COG-76558</a></td>
+    <td>[FP] CAPGEMINI SERVICE - legit url is being marked incorrectly</td>
+    <td>2024-12-06</td>
+    <td>2024-12-06 15:56:20.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76558><label for=COG-76558>COG-76558</label><br></td>
   </tr>
   <tr>
-    <td><a href =https://jira.talos.cisco.com/browse/COG-62838 target=_blank>COG-62838</a></td>
-    <td>[FP] - FINANZ INFORMATIK GMBH & CO.KG - IPAS - Not spam</td>
-    <td>2023-01-04</td>
-    <td>2023-01-04 07:52:14</td>
-    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-62838><label for=COG-62838>COG-62838</label><br></td>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76550 target=_blank>COG-76550</a></td>
+    <td>[FN] MakeMyTrip - ETD - AMP</td>
+    <td>2024-12-06</td>
+    <td>2024-12-06 13:40:44.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76550><label for=COG-76550>COG-76550</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76465 target=_blank>COG-76465</a></td>
+    <td>[FP] INDIGO AIRLINES - ETD - Legitimate emails marked Spam and Phish</td>
+    <td>2024-12-03</td>
+    <td>2024-12-06 13:20:31.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76465><label for=COG-76465>COG-76465</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76549 target=_blank>COG-76549</a></td>
+    <td>[FP] THE ENERGY AUTHORITY INC - Umbrella - Good URL Blocked</td>
+    <td>2024-12-06</td>
+    <td>2024-12-06 13:00:36.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76549><label for=COG-76549>COG-76549</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76298 target=_blank>COG-76298</a></td>
+    <td>[FP] HARMAN INTERNATIONAL INDUSTRIES INC - IPAS - emails got misclssified</td>
+    <td>2024-11-22</td>
+    <td>2024-12-06 12:35:05.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76298><label for=COG-76298>COG-76298</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76451 target=_blank>COG-76451</a></td>
+    <td>[ FN]- PT. BANK RAKYAT INDONESIA PERSERO TBK.- IPAS-Email not caught as SPAM</td>
+    <td>2024-12-02</td>
+    <td>2024-12-06 12:28:06.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76451><label for=COG-76451>COG-76451</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76001 target=_blank>COG-76001</a></td>
+    <td>[CUST][FP] GLOBITS GMBH - AMP - Cloud IOC - 5c5ccf3c374246cd08d81dd3ef54e5e3bdca90ba28e30efa427d809b362bf47b</td>
+    <td>2024-11-08</td>
+    <td>2024-12-06 12:25:36.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76001><label for=COG-76001>COG-76001</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76438 target=_blank>COG-76438</a></td>
+    <td>[FP] DSTA - SNORT3 - FP Trufflehunter SID 57115  57116  57117  57118</td>
+    <td>2024-11-29</td>
+    <td>2024-12-06 12:00:36.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76438><label for=COG-76438>COG-76438</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76468 target=_blank>COG-76468</a></td>
+    <td>[FN] DEKABANK - IPAS - AV Engine missed malicious file</td>
+    <td>2024-12-03</td>
+    <td>2024-12-05 19:04:50.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76468><label for=COG-76468>COG-76468</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76470 target=_blank>COG-76470</a></td>
+    <td>[FP] MAKEMYTRIP - ETD - Legitimate emails marked Scam and Phish</td>
+    <td>2024-12-03</td>
+    <td>2024-12-05 13:28:19.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76470><label for=COG-76470>COG-76470</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76466 target=_blank>COG-76466</a></td>
+    <td>[FP]  VICINITY CENTRES – SBRS – verdict given was 'None'</td>
+    <td>2024-12-03</td>
+    <td>2024-12-05 12:34:57.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76466><label for=COG-76466>COG-76466</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-76014 target=_blank>COG-76014</a></td>
+    <td>[FN][hb] TALDOR COMMUNICATIONS LTD – IPAS – Spam message being missed</td>
+    <td>2024-11-11</td>
+    <td>2024-12-05 12:33:31.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-76014><label for=COG-76014>COG-76014</label><br></td>
+  </tr>
+  <tr>
+    <td><a href =https://jira.talos.cisco.com/browse/COG-74286 target=_blank>COG-74286</a></td>
+    <td>[TESTING][Automation][TE] Talos - Other - Not a real ticket</td>
+    <td>2024-08-12</td>
+    <td>2024-12-04 18:52:41.000+0000</td>
+    <td><form action=/bulkresolve method=POST><input type=checkbox name=resolve value=COG-74286><label for=COG-74286>COG-74286</label><br></td>
   </tr>
   <tr>
     <td></td>
@@ -44,15 +121,15 @@ border-collapse: collapse;
   </tr>
   <tr>
     <td>Total Opened</td>
-    <td>2</td>
+    <td>13</td>
   </tr>
   <tr>
     <td>Jira</td>
-    <td>1</td>
+    <td>13</td>
   </tr>
   <tr>
     <td>Bugzilla</td>
-    <td>1</td>
+    <td>0</td>
   </tr>
 </table>
 </div>

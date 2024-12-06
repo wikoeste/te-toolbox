@@ -1,0 +1,9 @@
+#
+# ----------------
+# LOCAL RULES
+# ----------------
+# This file intentionally does not come with signatures.  Put your local
+# additions here.
+
+alert udp any any -> $HOME_NET 53 (msg:"MALWARE-CNC CobaltStrike DNS Beacon outbound A record"; flow:to_server; content:"|03|aaa|05|stage"; nocase; content:"|00 00 01 00 01|"; distance:0; metadata:impact_flag red, policy balanced-ips drop, policy max-detect-ips drop, policy security-ips drop, service dns; reference:url,colbaltstrike.com; classtype:trojan-activity; sid:45906; rev:1;) 
+

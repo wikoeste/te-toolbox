@@ -1,11 +1,14 @@
 import getpass,re,os.path,datetime
+
 # Global vars inititialized
 def init():
-    global uname,cec,umb,bzKey,umbjira,talosjira,lastninety,elasticqrys
-    global bugzilla,filedata,csvfname,rj,sherlockKey
+    global uname,cec,umb,umbjira,talosjira,lastninety,elasticqrys
+    global filedata,csvfname,rj,sherlockKey,inteldbmatches
     global htmlfname,homedir,templatespath,fname,junoKey,juno,que,results,guidconvert
-    global acedbhost,acedatabase
+    global acedbhost,acedatabase,jkey
+    global rule,vrt,snortversion,unedited,projDir,pcapDir,rulesDir
 
+# get home dir location based on OS/platform
 def gethome():
     match     = ''
     freebsd   = "/home/{}".format(uname)+"/.profile"
@@ -30,40 +33,50 @@ def getKey(keyname):
     key = re.sub(r'"','',key) # remove quotes from keys
     #print(key)
     return key
+
 # Setting global vars
 cec                 = ''
 uname               = getpass.getuser()
 fname,homedir       = gethome()
-bzKey               = getKey("bugzilla_api_key")
 junoKey             = getKey("jupiter")
 sherlockKey         = getKey("sherlock")
-#juno                = 'https://prod-juno-search.sv4.ironport.com/'
+jkey                = getKey("jira")
 juno                = 'https://prod-juno-search-api.sv4.ironport.com/'
 juno90              = "https://prod-juno-search-api.sco.cisco.com/juno_past_3_months/_search?"
-acedbhost           ='ava-tdbro-01prd.vrt.sourcefire.com'
-acedatabase         ='analyst_console'
-templatespath       ="/Users/wikoeste/PycharmProjects/te1-webapp/templates/"
+#AnalystConsole Creds
+acedbhost           = 'ava-tdbro-01prd.vrt.sourcefire.com'
+acedatabase         = 'analyst_console'
+templatespath       = "/Users/wikoeste/PycharmProjects/te1-webapp/templates/"
 lastninety          = datetime.datetime.now() - datetime.timedelta(90)
 lastseven           = datetime.datetime.now() - datetime.timedelta(7)
 # ticket web urls
 umbjira             = "https://jira.it.umbrella.com/rest/api/2/search"
 talosjira           = "https://jira.talos.cisco.com/rest/api/2/search"
-bugzilla            = "https://bugzilla.vrt.sourcefire.com/rest/bug"
 ace                 = "https://analyst-console.vrt.sourcefire.com"
 engjira             = "https://jira-eng-rtp3.cisco.com/rest/api/2/search"
+clamavjira          = "https://jira-eng-sjc1.cisco.com/rest/api/2/search"
 # data dictionary of all ticket data
 filedata            = {"ID":[],"Link":[],"Description":[],"DateOpened":[],"LastModified":[]}
 elasticqrys         = {"cids":[],"cats":[]}
 guidconvert         = {"cid":[],"date":"","rj":[],"esascores":[],'corpscores':[],'rjscores':[],'sbrs':[]}
-bzsearchresults     = {}
-sbjatresults        = {"tickets":[],"date":[],"scores":[],"hits":[]}
+sbjatresults        = {"tickets":[],"scores":[],"hits":[]}
+inteldbmatches      = {'url':[],'feed':[]}
+
 # file names
 csvfname            = os.path.join(templatespath, "casemanager-smry.csv")
 htmlfname           = os.path.join(templatespath, "assigned.html")
 unassigned          = os.path.join(templatespath, "unassigned.html")
 elastichtml         = os.path.join(templatespath, "elasticresults.html")
 cmdresultshtml      = os.path.join(templatespath, "guidconvertresults.html")
-bzsearchresultshtml = os.path.join(templatespath, "bzsearchresults.html")
 rjresultshtml       = os.path.join(templatespath, "rjresults.html")
-sbjathtml           = os.path.join(templatespath, "sbjat.html")
 acehtml             = os.path.join(templatespath, "acetickets.html")
+backlogbuddy        = os.path.join(templatespath, "backlogbuddy.html")
+
+#snort replay
+snortversion = ""
+rule         = None
+unedited     = None
+vrt          = None
+projDir      = "/Users/" + uname + "/PycharmProjects/te1-webapp/liono/"
+pcapDir      = "/Users/" + uname + "/PycharmProjects/te1-webapp/liono/pigreplay/pcaps/"
+rulesDir     = "/Users/" + uname + "/PycharmProjects/te1-webapp/liono/pigreplay/snort-rules/"

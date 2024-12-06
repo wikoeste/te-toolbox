@@ -1,0 +1,35 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Snort Replay</title>
+        <link rel='stylesheet' href = "../static/css/main.css">
+        <div class="navbar">
+          <h1>Select the pcap and rule to test!</h1>
+        </div>
+</head>
+<body>
+<p><a href="/">Home | </a><a href="/uploadpcap">Upload Pcap</a > <a href="/filedownloads"> | Download</a><a href="/replay"> | Snort Replay</a></p>
+
+<div class="alignment">
+    <form action="/testpcap" method="POST">
+        <p>SID:       <input type="text" name="sid"/></p>
+        <p>Rule Text: <textarea rows="5" cols="75" name="rawrule"></textarea></p>
+        <p>Packet Capture:</p>
+            <!--<input type="radio" id="1" name="pcap"/><label for="1">1</label>-->
+            <!--<input type="radio" id="2" name="pcap"/><label for="2">2</label>-->
+                <div class="raidoalign">
+                    <ul>
+                    {% for file in files %}
+                        <li><input type="radio" value="{{file}}" name="pcaps"/><label for="{{url_for('download', filename=file)}}">{{file}}</label></li>
+                    {% endfor %}
+                    </ul>
+                </div>
+            <br>
+            <input type="submit" value="Submit">
+    </form>
+</div>
+
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 from liono.common import settings
 settings.init()
+from liono.logging import logger
 import requests,json
 requests.packages.urllib3.disable_warnings()
 from jira import JIRA
@@ -25,6 +26,7 @@ def assignque(ticket):
             return results
         else:
             return results
+
 def jira(ticket):
     options = {"server": "https://jira.talos.cisco.com"}
     jira = JIRA(basic_auth=(settings.uname, settings.cec), options=options)
@@ -33,9 +35,7 @@ def jira(ticket):
     comment(ticket)
     assigned = "The COG case was assigned to {}".format(settings.uname)+", {}".format(ticket)
     return assigned
-    #get and change priority
-    # priority    = issue.fields.priority.name
-    # issue.update(priority={'name': 'P4'}) # set to a p4
+
 def comment(ticket):
     template = "I have taken ownership of this ticket and will investigate the issue shortly. \
         I will update the ticket once the analysis is complete. Thank you."
@@ -45,6 +45,7 @@ def comment(ticket):
     comment = jira.add_comment(ticket, template)
     success = "COG ticket accepted"
     return success
+
 def resolveclose(ticket):
     hdrs  = {'Content-type': 'application/json'}
     if "COG" in ticket:
@@ -69,12 +70,17 @@ def resolveclose(ticket):
         response = requests.put(settings.bugzilla +"/"+ ticket, headers=hdrs, json=data, verify=False)
         if response.status_code == 200 or 201:
             jresp = response.json()
-            print("BZ API comment POST results", json.dumps(jresp, indent=2))
+            res = ("BZ API comment POST results", json.dumps(jresp, indent=2))
+            print(res)
+            logger.log(res)
         else:
             err = ("BZ API Error closing case {}".format(response.status_code))
-            print(err)
+            logger.log(err)
     else:
-        print("invalid ticket, ", +ticket)
+        err = ("invalid ticket, ", +ticket)
+        print(err)
+        logger.log(err)
+
 def bzticket(bugid): # auto assign and comment bz tickets
     teuser = settings.uname+"@cisco.com"
     params = {'id': int(bugid), 'assigned_to': teuser,'api_key': settings.bzKey}
@@ -94,10 +100,12 @@ def bzticket(bugid): # auto assign and comment bz tickets
         comment = requests.post(settings.bugzilla+"/"+bugid+"/comment", params=params, verify=False)
         if comment.status_code == 200 or 201:
             jresp = comment.json()
-            print("BZ API comment POST results", json.dumps(jresp, indent=2))
+            res = ("BZ API comment POST results", json.dumps(jresp, indent=2))
+            print(res)
+            logger.log(res)
         else:
             err = ("BZ API Error adding comment {}".format(comment.status_code))
-            return err
+            logger.log(err)
     else:
         err = ("BZ API Assign Error {}".format(resp.status_code))
-        return err
+        logger.log(err)

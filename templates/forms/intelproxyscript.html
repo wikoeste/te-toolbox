@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Umbrella IntelProxy Search</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>Umbrella/ODNS Intelligent Proxy Script Search Tool</h1>
+</head>
+<body>
+    <p><a href="/layout">Home |</a><a href="/intelproxyscript"> Proxy Script Search </a></p>
+    <div class="elasticform">
+    <form action="/inteldbproxyscript" method="POST">
+        <p>Domain,URL,URI: <input type="text" name="sample"/><input type="submit" value="submit"></p>
+    </form>
+    </div>
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

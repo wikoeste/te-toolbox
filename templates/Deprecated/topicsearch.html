@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Topic C3 Search Queries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>Cisco Topic C3 Search</h1>
+</head>
+<body>
+    <p><a href="/layout">Home</a></p>
+    <div class="elasticform">
+    <form action="/gettopic" method="POST">
+        <p>Query: <input type="text" name="qry" /><input type="submit" value="submit"></p>
+    </form>
+    </div>
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

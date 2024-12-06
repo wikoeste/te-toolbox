@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Elastic Queries</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <h1>Juno Elastic Query UI</h1>
+</head>
+<body>
+    <p><a href="/layout">Home</a> <a href="/jirasearch">Jira Search</a></p>
+    <div class="elasticform">
+    <form action="/getelastic" method="POST">
+        <p>Username: <input type="text" name="username" /><input type="submit" value="submit"></p>
+        <p>SHA256: <input type="text" name="sha256" /><input type="submit" value="submit"</p>
+        <p>From Domain Address: <input type="text" name="domain" /><input type="submit" value="submit"</p>
+        <p>Sender Full Email Address: <input type="email" name="sender" /><input type="submit" value="submit"</p>
+        <p>Sender IP Address:  <input type="text" name="ip" /><input type="submit" value="submit"</p>
+        <p>Subject Message:  <input type="text" name="subj" /><input type="submit" value="submit"</p>
+        <p>GUID: <input type="text" name="guid" /><input type="submit" value="Submit"></p>
+    </form>
+    </div>
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

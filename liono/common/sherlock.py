@@ -4,7 +4,7 @@ from terminaltables import AsciiTable
 from ipaddress import ip_address
 requests.packages.urllib3.disable_warnings()
 ###
-def getSbrs(senderIP, q):
+def getSbrs(senderIP):
     #Check if the IP is ipv4 or ipv6
     is_not_empty = bool(senderIP)
     if is_not_empty is False:
@@ -64,7 +64,7 @@ def pbl(revip):
             res = "Not Found"
     return res
 
-def trackerDecodeRules(header,user,key,engine,q):
+def trackerDecodeRules(header,user,key,engine):
     url = 'https://sherlock.ironport.com/webapi/tracker/get_rules/?header='
     encoded = requests.utils.quote(str(header)) # created encoded header
     resp = requests.get(url+encoded, auth=(user,key),verify=False)
@@ -107,35 +107,8 @@ def trackerDecodeRules(header,user,key,engine,q):
             chgScores = "\n".join(changed)
             rulenames = "\n".join(rulename)
             descripts = "\n".join(desc)
-            '''ruletable = [
-                ["Was","Now","Changed","Rule","Description"],
-                [wasScores,nowScores,chgScores,rulenames,descripts],
-            ]
-            ruleTable = AsciiTable(ruletable, "Header Type: {}".format(engine))
-            ruleTable.justify_columns[2] = 'right'
-        else:
-            ruletable = [
-                ["Was","Now","Changed","Rule","Description"],
-                ['N/A','N/A','No Suitable Header Found','N/A','N/A'],
-            ]
-            ruleTable = AsciiTable(ruletable, 'ESA/Corpus Tracker Decoder')
-        #Create config table and print
-        configData = [
-            ['Profile: {}'.format(ESAprofile)],
-            ['Case: ' + caseRules],
-            ['SDR Bucket: ' + sdr_bucket],
-            ['IMS Enabled: ' + str(ims_enabled)],
-            ['IMS Score: ' + ims_score],
-            ['OF Enabled: {}'.format(of_enabled)],
-            ['OF Cat: ' + of_cat],
-            ['VOF Score ' + vof_score],
-            ['Webinit Enabled: {}'.format(webinit)],
-        ]
-        configTable = AsciiTable(configData, 'ESA Config Data')
-        q.put(configTable)
-        '''
 
-def reinjection(sample,user,key,q):
+def reinjection(sample,user,key):
     rjURL = 'https://sherlock.ironport.com/webapi/reinjection/search'
     params = {'mids': sample}
     #print(params)
@@ -222,26 +195,22 @@ def reinjection(sample,user,key,q):
             # Get and print tracker decoder header information (rule and config data)
             if tracker_esa is not None:
                 engine = "ESA"
-                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_esa, user, key, engine, q))
+                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_esa,user,key,engine))
                 threads.append(t1)
             elif tracker_corpus is not None:
                 engine = "CASE"
-                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_corpus, user, key, engine, q))
+                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_corpus,user,key,engine))
                 threads.append(t1)
             elif rtracker is not None:
                 engine = "Reinjection"
-                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_rinj, user, key, engine, q))
+                t1 = threading.Thread(target=trackerDecodeRules, args=(tracker_rinj,user,key,engine))
                 threads.append(t1)
             else:
                 # Get empty tracker decoder table and print results
-                noTracker_data = [
-                    ['Tracker Decoder Data'],
+                noTracker_data = [['Tracker Decoder Data'],
                     ['No Data Available'],
-                    ['No Valid Headers']
-                ]
+                    ['No Valid Headers']]
                 trackertable = AsciiTable(noTracker_data)
-                q.put(trackertable)
-
             # send back the rj results for html page
             # settings.guidconvert['rj'].append(sample)
             settings.guidconvert['rj'].append("Sample: {}".format(cidlist[count-1]))
@@ -252,7 +221,7 @@ def reinjection(sample,user,key,q):
             settings.guidconvert['rj'].append('Recipients: {}'.format(recipients))
             settings.guidconvert['rj'].append('Sending IP: {}'.format(sendingIP))
             #Get SBRS IP threat data
-            t2 = threading.Thread(target=getSbrs, args=(sendingIP, q))
+            t2 = threading.Thread(target=getSbrs, args=(sendingIP,))
             threads.append(t2)
             if len(threads) >= 1:
                 for t in threads:
@@ -274,3 +243,6 @@ def reinjection(sample,user,key,q):
             ruleVers, subjwrap, sendingIP, egregious, vr_verd, t1, t2 = ('', '', '', '', '', '', '')
             senders, recipients, langs, keywords, flags, threads = ([], [], [], [], [], [])
             count+=1
+        print("Sherlock RJ Web API Success: {}".format(sample))
+    else:
+        print("Sherlock API HTTP ERROR {}".format(status))

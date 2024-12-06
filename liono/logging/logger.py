@@ -1,12 +1,8 @@
-from liono.common import settings
-import logging, os  # first of all import the module
+import logging, os
 
-def log():
-    # write to users home directory
-    homedir = os.path.expanduser("~")
-    #print(homedir)
-    fname = 'te1_audit.log'
-    fmt = '%(asctime)s:%(name)s:%(levelname)s - %(message)s'
-    logging.basicConfig(filename=homedir + "/" + fname, format=fmt)
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+def log(msg):
+    homedir = os.path.expanduser("~")      # write to users home directory
+    fname = 'te1-webapp.log'               # file name of the log
+    fmt = '%(asctime)s:%(name)s:%(levelname)s - %(message)s' # formate of the timestamps
+    logging.basicConfig(filename=homedir + "/" + fname, format=fmt) # configuration complete for logging
+    logging.error(msg)
