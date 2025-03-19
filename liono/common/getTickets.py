@@ -54,6 +54,9 @@ def bugzilla(flag):
 '''
 
 def jira(url,flag,pw):
+    # clear ticket data from dictionary
+    settings.filedata.clear()
+    settings.filedata = {"ID": [], "Link": [], "Description": [], "DateOpened": [], "LastModified": []}
     tix, jid, descs, smrys, created, urls, lastmod = ([], [], [], [], [], [], [])
     jql       = None
     match     = re.findall('j.+?\/', url)
@@ -63,29 +66,17 @@ def jira(url,flag,pw):
     api       = "https://jira.talos.cisco.com/browse/"
     rqurl = "https://jira.talos.cisco.com/rest/api/2/search"
     if flag == True:
-        if "umbrella" in ticketq: # get my umbrella jira escalations
-            jql   = "?jql=reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
-            rqurl = settings.umbjira
-            api   = "https://jira.it.umbrella.com/browse"
-        elif "all" in url: # get all my open tickets in talos jira
-            jql = "?jql=project in(COG,EERS,WEB,AMPBP,TALOSOPS) and (reporter="+settings.uname+" or assignee="+settings.uname+") and resolution = Unresolved order by updated DESC"
-        elif "amp" in ticketq or "amp" in url: # get my amp bp escalations
-            jql     = "?jql=project=AMPBP and (reporter="+settings.uname+") and resolution = Unresolved order by updated DESC"
-        elif "ops" in ticketq or "ops" in url: # get my talos ops tickets
+        if "ops" in ticketq or "ops" in url: # get my talos ops tickets
             jql     = "?jql=project=TALOSOPS and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
-        elif "ret" in ticketq or "ret" in url: # get my ret-eng/effifcayc escalations
-            jql     = "?jql=project=EFFICACY and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
-            api     = "https://jira-eng-rtp3.cisco.com/"
-            rqurl    = settings.engjira
         elif "eers" in url: # get my eers escalations
             jql     = "?jql=project=EERS and reporter="+settings.uname+" and resolution = Unresolved order by updated DESC"
-        elif "sjc1" in ticketq or "sjc1" in url:
-            jql     = "?jql=project=CLAM and reporter=" + settings.uname + " and resolution = Unresolved order by updated DESC"
         elif "thr" in ticketq or "thr" in url:
             jql     = "?jql=project=THR and reporter=" + settings.uname + " and resolution = Unresolved order by updated DESC"
+        elif "resbz" in ticketq or "resbz" in url:
+            jql     = "?jql=project=RESBZ and reporter=" + settings.uname + " and resolution = Unresolved order by updated DESC"
         else: # get my assigned tickets
             jql     = "?jql=project=COG and assignee in ("+settings.uname+") AND status in (Open, Reopened, 'Pending Reporter', 'COG Investigating', 'Pending 3rd Party') order by updated DESC"
-    else: # Get all unaasigined jira tickets in the COG queue/project
+    else: # Get all unassigned jira tickets in the COG queue/project
         jql = '?jql=project=COG and assignee in (EMPTY) order by updated DESC'
     resp = requests.get(rqurl+jql+fields, headers=headers,auth=(settings.uname,pw), verify=False)
     if resp.status_code == 200:
@@ -107,7 +98,11 @@ def jira(url,flag,pw):
                 smrys.append(frmtsmry)
                 datefrmt = re.sub("T.+", "", i['fields']['created'])
                 created.append(datefrmt)
-                lastmodfrmt = re.sub("T|\.\d{3}-\d{4}"," ", i['fields']['updated'])
+                lastmodfrmt =   i['fields']['updated']
+                #lastmodfrmt = re.sub("T|\.\d{3}-\d{4}"," ", i['fields']['updated'])
+                lastmodfrmt = re.sub("T"," ",lastmodfrmt)
+                lastmodfrmt = re.sub(".000+","",lastmodfrmt)
+                #print("After re.sub:", lastmodfrmt)
                 lastmod.append(lastmodfrmt)
                 urls.append('<a href ='+api+i['key']+' target=_blank>'+i['key']+'</a>')
             #join ticket data for printing
@@ -136,12 +131,10 @@ def unassigned(pw):
     # clear assigned ticket data from dictionary
     settings.filedata.clear()
     settings.filedata = {"ID":[],"Link": [], "Description": [], "DateOpened": [], "LastModified":[]}
-    # Show unassigned tickets in jira, bugzilla
+    # Show unassigned tickets in jira
     flag = False
-    # Show unassigned tickets in jira, bugzilla, and ace
-    #t1 = threading.Thread(target=bugzilla, args=(flag,))
+    # Show unassigned tickets in jira and ace
     t2 = threading.Thread(target=jira, args=(settings.talosjira, flag, pw))
-    #threads.append(t1)
     threads.append(t2)
     for t in threads:
         t.start()
@@ -159,5 +152,3 @@ def unassigned(pw):
         err = ("No file data in filedata variables from settings\nOr some other error in csv creation")
         logger.log(err)
     threads.clear()
-    settings.filedata.clear()
-    settings.filedata = {"ID":[],"Link": [], "Description": [], "DateOpened": [], "LastModified":[]}

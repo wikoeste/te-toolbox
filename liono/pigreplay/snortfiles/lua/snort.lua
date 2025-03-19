@@ -184,10 +184,14 @@ ips =
 {
     -- use this to enable decoder and inspector alerts
     enable_builtin_rules = true,
+    variables = default_variables,
+    --rules = [[
+	--    include /usr/local/etc/snort/snort-rules/snort3-community-rules/snort3-community.rules
+    --]]
     -- use include for rules files; be sure to set your path
     -- note that rules files can include other rules files
     -- (see also related path vars at the top of snort_defaults.lua)
-    variables = default_variables
+
 }
 
 -- use these to configure additional rule actions

@@ -46,6 +46,7 @@ def submissions(username): # last 24 hours
         print("Timeout exception to Juno server.")
 
 def fromdomain(sender): # last 90 days
+    settings.elasticqrys.clear()
     query   = '{"size": 25,"_source": ["message_id", "category"],"query": {"bool": {"must": [{"nested": {"path": "froms","query": {"term": ' \
               '{"froms.address_domain":"'+sender+'"}}}}]}}}'
     headers =  {'Content-type': 'application/json'}
@@ -229,6 +230,119 @@ def subject(subjstr):
             print("Error HTTP {}".format(response.status_code))
     except requests.ConnectionError as e:
         print("ERROR Reaching Juno server!")
+
+def etdverdicts(cids):
+    etdverd,guid,amp,bd,cape,cua,rap,ret,tg,turs,tuvs,vade,sdrverd = ("--",) * 13
+    data         = ""
+    results      = [{}]
+    hdrs         = {"Content-type":"application/json"}
+    print(len(cids))
+    for c in cids:
+        qry     = '{"_source":["_id","talos_msg_guid","@timestamp","etd.etd_verdict","etd.etd_verdict_ts","etd.dispute_customer_guid","etd.verdict_keywords.amp","etd.verdict_keywords.bd","etd.verdict_keywords.cape",' \
+                  '"etd.verdict_keywords.cua","etd.verdict_keywords.raptor","etd.verdict_keywords.ret","etd.verdict_keywords.tg",' \
+                  '"etd.verdict_keywords.turs","etd.verdict_keywords.tuvs","etd.verdict_keywords.vade","tos.address_domain","subject",' \
+                  '"sdr.verdict_name"],"query":{"term": {"_id": "'+str(c)+'"}}}'
+        try:
+            response = requests.get(settings.juno + "juno_past_12_months/_search?",headers=hdrs,data=qry,
+                auth=(settings.uname,settings.junoKey),verify=False,timeout=120,stream=True)
+            if response.status_code == 200:
+                jresult = response.json()
+                #print(json.dumps(jresult, indent=2))
+                total = jresult['hits']['total']['value']
+                if total > 0:
+                    #print(json.dumps(jresult, indent=2))
+                    for i in jresult['hits']['hits']:
+                        try:
+                            guid = i["_source"]["talos_msg_guid"]
+                        except KeyError:
+                            guid = "Unknown"
+                        try:
+                            amp = i["_source"]["etd"]["verdict_keywords"]["amp"]
+                        except KeyError:
+                            amp = "None"
+                        try:
+                            bd = i["_source"]["etd"]["verdict_keywords"]["bd"]
+                        except KeyError:
+                            bd = "None"
+                        try:
+                            cape = i["_source"]["etd"]["verdict_keywords"]["cape"]
+                        except KeyError:
+                            cape = "None"
+                        try:
+                            cua = i["_source"]["etd"]["verdict_keywords"]["cua"]
+                        except KeyError:
+                            cua = "None"
+                        try:
+                            rap = i["_source"]["etd"]["verdict_keywords"]["raptor"]
+                        except KeyError:
+                            rap = "None"
+                        try:
+                            ret = i["_source"]["etd"]["verdict_keywords"]["ret"]
+                        except KeyError:
+                            ret = "None"
+                        try:
+                            tg = i["_source"]["etd"]["verdict_keywords"]["tg"]
+                        except KeyError:
+                            tg = "None"
+                        try:
+                            turs = i["_source"]["etd"]["verdict_keywords"]["turs"]
+                        except KeyError:
+                            turs = "None"
+                        try:
+                            tuvs = i["_source"]["etd"]["verdict_keywords"]["tuvs"]
+                        except KeyError:
+                            tuvs = "None"
+                        try:
+                            vade = i["_source"]["etd"]["verdict_keywords"]["vade"]
+                        except KeyError:
+                            vade = "None"
+                        try:
+                            etdverd = i["_source"]["etd"]["etd_verdict"]
+                        except KeyError:
+                            etdverd = "None"
+                        try:
+                            sdrverd = i["_source"]["sdr"][0]["verdict_name"]
+                        except KeyError:
+                            sdrverd = "None"
+                        results.append({"cid": i["_id"],"guid":guid,"ts": i["_source"]["@timestamp"],
+                                    "verd": etdverd,"amp":amp,"bd":bd,"cape":cape,"cua":cua,"rap":rap,"ret":ret,"tg":tg,
+                                    "turs":turs,"tuvs":tuvs,"vade":vade,"sdr":sdrverd})
+                else:
+                    results.append({"cid":c,"guid":"--","ts":"--","verd":"--","amp":amp,"bd":bd,"cape":"--","cua":"--","rap":"--","ret":"--","tg":"--",
+                                    "turs":"--","tuvs":"--","vade":"--","sdr":"--"})
+            else:
+                results.append({"cid":c,"guid":"--","ts":"--","verd":"--","amp":amp,"bd":bd,"cape":"--","cua":"--","rap":"--","ret":"--","tg":"--",
+                                    "turs":"--","tuvs":"--","vade":"--","sdr":"--"})
+                print("JSON ERROR:{} ".format(response.status_code)+c)
+        except requests.exceptions.Timeout:
+            print("Timeout exception to Juno server.")
+    #Results of ETD hdrs
+    if len(results) > 1:
+        del results[0]
+        print("Results total = " + str(len(results)))
+        for i in results:
+            data = ("===ETD Results==="+
+            "\nSample: "+ i["cid"]+
+            "\nGUID: "+ i["guid"]+
+            "\nVerdict: "+ i["verd"]+
+            "\nDate: "+ i["ts"]+
+            "\n===Engines==="+
+            "\n Amp:"+ i["amp"]+"\n"+
+            "BD:\t"+i["bd"]+"\n"+
+            "Cape:\t"+i["cape"]+"\n"+
+            "CUA:\t"+i["cua"]+"\n"+
+            "MA:\t"+i["tg"]+"\n"+
+            "TURS:\t"+i["turs"]+"\n"+
+            "TUVS:\t"+i["tuvs"]+"\n"+
+            "Vade:\t"+i["vade"]+"\n"+
+            "SDR:\t"+i["sdr"]+"\n")
+            #print(data)
+            # write the results to global var
+            settings.etdresults.append(data)
+    else:
+        err = "No results for sample: "+str(i)
+        # write the results to global var
+        settings.etdresults.append(err)
 
 def timeconverter(timestamp):
     p = '%Y-%m-%dT%H:%M:%S.%fZ'

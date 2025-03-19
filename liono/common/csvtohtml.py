@@ -6,7 +6,7 @@ def writedata(flag):
     ids,url,desc,date,last,multi,resolved   = ([],[],[],[],[],[],[])
     msgid,categ,rj,scores,hits              = ([],[],[],[],[])
     timefrmt,times       = (None,None)
-    count,bzcount,total  = (0,0,0)
+    count,total  = (0,0)
     button   = '<button type=submit>Take Selected Tickets</button>' \
              '</form>'
     closebtn = '<button type=submit>Resolve Tickets</button>' \
@@ -19,11 +19,6 @@ def writedata(flag):
         last = list(itertools.chain.from_iterable(settings.filedata['LastModified']))
         ids  = list(itertools.chain.from_iterable(settings.filedata['ID']))
         total = len(url)
-        for c in url:
-            if "bugzilla" not in c:
-                count+=1
-            else:
-                bzcount+=1
         for i in ids:
             chkboxes = '<form action=/bulkresolve method=POST>'\
                 '<input type=checkbox name=resolve value='+i+'>' \
@@ -49,7 +44,8 @@ def writedata(flag):
         hdrs = ["CIDS","DATE"]
         msgid = settings.elasticqrys['cids']
         dates = settings.elasticqrys['cats']
-    elif flag == "juno4": #sender email
+    elif flag == "juno4":
+        # sender email
         hdrs = ["CIDS"]
     elif flag == "juno5": # subject message search
         hdrs = ["CIDS","Scores","Date","Category"]
@@ -63,18 +59,9 @@ def writedata(flag):
         hdrs  = ["cid", "category"]
         msgid = settings.elasticqrys['cids']
         categ = settings.elasticqrys['cats']
-    elif flag == "cmd": #talos guid to cmd converter
-        hdrs   = ["Coverted CID","Date"]
-        msgid.append(settings.guidconvert['cid'])
-        timest = settings.guidconvert['date']
-        timefrmt = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(timest))
     elif flag =="rj":
+        # reinjection
         hdrs = ["CID"]
-    elif flag == "sbjat":
-        hdrs    = ["Tickets", "Score", "Hits"]
-        ids     = settings.sbjatresults['tickets']
-        scores  = settings.sbjatresults['scores']
-        hits    = settings.sbjatresults['hits']
     else: # loads the unassigned page with take ticket button and checkboxes
         hdrs = ["Link", "Description","Created", "Assign"]
         url  = list(itertools.chain.from_iterable(settings.filedata['Link']))
@@ -85,8 +72,6 @@ def writedata(flag):
         for c in url:
             if "COG" in c:
                 count+=1
-            else:
-                bzcount+=1
         for i in ids:
             chkboxes = '<form action=/takescript method=POST>'\
                 '<input type=checkbox name=checks value='+i+'>' \
@@ -122,28 +107,7 @@ def writedata(flag):
                 writer.writerow([url[row],desc[row],date[row],last[row],resolved[row]])
             writer.writerow(['','','','', closebtn])
             writer.writerow(["Total Opened",total])
-            writer.writerow(["Jira",count])
-            writer.writerow(["Bugzilla",bzcount])
-        elif flag == "cmd": # cmd guid to cid
-            for row in range(int(len(msgid))): # write cid and date
-                writer.writerow([msgid[row],timefrmt])
-            # writes the reinjection results for the cid
-            for row in range(int(len(msgid))):
-                #print(int(len(settings.guidconvert['rj'])))
-                writer.writerow(["Sherlock Reinjection Results"])
-            for i in settings.guidconvert['rj']:
-                writer.writerow([i])
-            #sbrs data for the sending ip if any
-            if len(settings.guidconvert['sbrs']) > 0:
-                writer.writerow([settings.guidconvert['sbrs']])
-            # tracker decoder scores data
-            trackerhdrs = ['Eng', 'Score', 'Verdict', 'Header Present', 'SBRS']
-            writer.writerow(trackerhdrs)
-            writer.writerows([settings.guidconvert['esascores']])
-            writer.writerows([settings.guidconvert['corpscores']])
-            writer.writerows([settings.guidconvert['rjscores']])
-            writer.writerow('\n')
-            settings.guidconvert.clear() # empty dict
+            #writer.writerow(["Jira",count])
         elif flag == "rj":
             for i in settings.guidconvert['rj']:
                 writer.writerow([i])
@@ -158,14 +122,12 @@ def writedata(flag):
                 writer.writerow([url[row],desc[row],date[row],multi[row]])
             writer.writerow(['','','',button])
             writer.writerow(["Total Opened",total])
-            writer.writerow(["Jira",count])
-            writer.writerow(["Bugzilla",bzcount])
         f.close()
 
 def htmloutput(fname): # wrtite html file from the csv file
-    homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > ' \
-               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>\n'
-    #print(fname)
+    homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a> ' \
+               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a><a href="/last7"> | Last 7 Days</a></p>\n' \
+               '<p><a href="/ajx"> | Scripting</a></p>'
     if 'backlog' in fname:
         filein = open('/Users/wikoeste/PycharmProjects/te1-webapp/static/backlogbuddy.csv', "r")
     else:
@@ -174,32 +136,44 @@ def htmloutput(fname): # wrtite html file from the csv file
     data = filein.readlines()
     #print(data)
     if "unassigned" in fname:
+        # UNASSIGNED
         hdr = "Unassigned"
     elif "assigned" in fname:
+        # ASSIGNED
         hdr = "Assigned"
     elif "elastic" in fname:
         hdr = "Juno Elastic Query API Results"
         homelink = '<p><a href="/layout">Home | </a><a href="/elasticq">Elastic Qrys</a></p>\n'
-    elif "guid" in fname:
-        hdr  = "GUID -> CID Converter with Reinjection"
     elif "rj" in fname:
+        # REINJECTION
         hdr = "Sherlock API Reinjection Results"
-    elif "sbjat" in fname:
-        hdr = "SBRS Jira Automation Tool - SBJAT"
     elif "backlog" in fname:
+        # BACKLOG BUDDY
         hdr = "Backlog Buddy List"
     else:
+        # ERROR PAGE
         hdr = "Error Page"
+    # CSS LINK
     css = "<html>\n" \
           "<head>\n" \
           "<link rel='stylesheet' href = \"{{ url_for('static', filename='css/main.css') }}\">\n" \
           "<h1 class='logo'>"+hdr+"</h1>\n" \
           "</head>\n" \
           "<body>"
+    #TBL creation
     table = css
-    table += "\n<div class='tblcontainer'>\n" \
-            "<table class='tbl'>\n"
-    table += "<style>\n" \
+    #table += "\n<div class='tblcontainer'>\n" \
+    #        "<table class='tbl'>\n"
+    if 'backlog' in fname:
+        table += "<style>\n" \
+                 "table, th, td {\n" \
+                 "border: 1px solid black;\n" \
+                 "border-collapse: collapse;\n" \
+                 "}\n" \
+                 "</style>\n" \
+                 "<table style='width:40%'>\n"
+    else:
+        table += "<style>\n" \
             "table, th, td {\n" \
                 "border: 1px solid black;\n" \
                 "border-collapse: collapse;\n" \
@@ -221,6 +195,7 @@ def htmloutput(fname): # wrtite html file from the csv file
             table += "    <td>{0}</td>\n".format(column.strip())
         table += "  </tr>\n"
     table   += "</table>\n</div>\n"
+    table   += "<br><br>"
     footer   = "<div class=footer>\n" \
                "<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>\n" \
                "</div>\n"

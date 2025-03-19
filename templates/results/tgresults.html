@@ -1,0 +1,168 @@
+<html>
+    <header>
+      <title>MA</title>
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+      <!-- menu bar -->
+      <div class="navbar">
+          <h1>Malware Analytics Results</h1>
+          <!--<img src="../static/imgs/toolbox.png" style="position:absolute;right:20px;top:20px;"/>-->
+        <a href={{url_for("layout")}}>Home</a>
+        <!--TICKETS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Tickets
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("runscript")}}>GET JIRA TIX</a>
+            <a href={{url_for("assignedtickets")}}>ASSIGNED</a>
+            <a href={{url_for("unassignedtickets")}}>UNASSIGNED</a>
+            <a href={{url_for("getacetix")}}>ANALYST CONSOLE TIX</a>
+            <a href={{url_for("talosjiraeers")}}>Jira-EERS</a>
+            <a href={{url_for("talosjiraops")}}>Jira-TalosOps</a>
+            <a href={{url_for("talosjirathr")}}>Jira-THR</a>
+            <a href={{url_for("talosjiraresbz")}}>Jira-RESBZ</a>
+          </div>
+        </div>
+        <!--UMBRELLA DROPDOWN MENU-->
+        <div class="dropdown">
+         <button class="dropbtn">Umbrella-Tools
+          <i class="fa fa-caret-down"></i>
+         </button>
+          <div class="dropdown-content">
+            <a href="https://editor.securityresearch.umbrella.com/editor" target="_blank">Research Editor</a>
+            <a href={{url_for("intelproxysearchform")}}>Proxy Script Search</a>
+          </div>
+        </div>
+        <!--SEARCH TOOLS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Search Tools
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="/elasticq">Elastic Queries</a>
+            <a href="/jirasearch">Jira Search</a>
+          </div>
+        </div>
+        <!--SCRIPTS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Scripts
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("reinjection")}}>Reinjection</a>
+            <a href={{url_for("etd")}}>ETD</a>
+            <a href={{url_for("tg")}}>Malware Analytics</a>
+            <a href={{url_for("backlogbuddy")}}>Backlog Buddy</a>
+            <a href={{url_for("langs")}}>IPAS Lang Acronyms</a>
+          </div>
+        </div>
+        <!--STAGING SERVERS DROPDOWN MENU-->
+        <div class="dropdown">
+         <button class="dropbtn">Staging Servers
+          <i class="fa fa-caret-down"></i>
+         </button>
+          <div class="dropdown-content">
+            <a href="https://analyst-console-staging.vrt.sourcefire.com/escalations" target="_blank">ACE</a>
+            <a href="https://fmd-tepot-01tst.vrt.sourcefire.com" target="_blank">TEA</a>
+            <a href="https://talosintelligence-staging.herokuapp.com/reputation_center/" target="_blank">Talos Intel</a>
+          </div>
+        </div>
+        <!--LOGOUT BUTTON-->
+        <a href={{url_for("logout")}}>Logout</a>
+      </div>
+    </header>
+    <!--end menu bar-->
+   <body>
+        <br><br>
+        <div style="float: left; width: 20%">
+            <table border="2">
+                <thead>
+                    <th>Sample ID</th>
+                </thead>
+                <tbody>
+                {%for x in r1.sid%}
+                <tr>
+                    <td>{{x}}</td>{%endfor%}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div style="float: left; width: 5%">
+            <table border="2">
+                <thead>
+                    <th>Score</th>
+                </thead>
+                <tbody>
+                {%for s in r1.score%}
+                <tr>
+                    <td>{{s}}</td>{%endfor%}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="float: left; width: 15%">
+            <table border="2">
+                <thead>
+                    <th>Date</th>
+                </thead>
+                <tbody>
+                {%for d in r1.date%}
+                <tr>
+                    <td>{{d}}</td>{%endfor%}
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="float:left; width:10%">
+            <table border="2">
+                <title>Behavioral Indicator > 80</title>
+                <thead>
+                    <th>BI SCORE</th>
+                </thead>
+                <tbody>
+                        {%for s in r2.score%}
+                        <tr>
+                            <td>{{s}}</td>
+                        </tr>{%endfor%}
+                </tbody>
+            </table>
+        </div>
+
+        <div style="float:left; width:30%">
+            <table border="2">
+                <thead>
+                    <th>BI Name</th>
+                </thead>
+                <tbody>
+                        {%for n in r2.name%}
+                        <tr>
+                            <td>{{n}}</td>
+                        </tr>{%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <br><br>
+<!--<div>
+        <table border="2">
+                <title>File MetaData</title>
+                <thead>
+                    <th>File Name</th>
+                    <th>Hash</th>
+                    <th>Type</th>
+                    <th>Magic</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+</div>-->
+   <br><br>
+   </body>
+        <div class="footer">
+            <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+        </div>
+</html>

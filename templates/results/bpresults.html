@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>BP Results</title>
+    <link rel='stylesheet' href = "../../static/css/main.css">
+    <meta charset="UTF-8">
+    <!-- Drop down navigation bar -->
+    <div class="navbar">
+        <h1>Secure Endpoint BP Search Results</h1>
+        <!--Home Page Link-->
+        <a href="/layout">Home</a>
+        <!--TICKETS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Tickets
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("runscript")}}>GET JIRA TIX</a>
+            <a href={{url_for("assignedtickets")}}>ASSIGNED</a>
+            <a href={{url_for("unassignedtickets")}}>UNASSIGNED</a>
+            <a href={{url_for("getacetix")}}>ANALYST CONSOLE TIX</a>
+          </div>
+        </div>
+        <a href={{url_for("bpSearch")}}> BP Search Form</a>
+        <p></a><a href="/logout">Log Out</a></p>
+    </div>
+</head>
+<body>
+<br><br>
+
+<div style="float: left; width: 50%">
+    {%for d in data%}
+        {{d}}
+    <br>
+    {%endfor%}
+</div>
+
+<br><br>
+
+<div style="float: right; width: 50%">
+    <table border="1">
+        <thead>
+            <th>Jira THR related tickets</th>
+        </thead>
+            <tbody>
+            {%for r in res%}
+            <tr>
+                <td>{{r}}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+<br><br>
+
+<div class="footer">
+  <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+</div>
+</body>
+</html>

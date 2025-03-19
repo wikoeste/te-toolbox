@@ -3,18 +3,15 @@
 <link rel='stylesheet' href = "{{ url_for('static', filename='css/main.css') }}">
 <h1 class='logo'>Backlog Buddy List</h1>
 </head>
-<body>
-<div class='tblcontainer'>
-<table class='tbl'>
-<style>
+<body><style>
 table, th, td {
 border: 1px solid black;
 border-collapse: collapse;
 }
 </style>
-<table style='width:100%'>
-<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>
-  <tr>
+<table style='width:40%'>
+<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a> <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a><a href="/last7"> | Last 7 Days</a></p>
+<p><a href="/ajx"> | Scripting</a></p>  <tr>
     <th>Engineer</th>
     <th>Primary</th>
     <th>Secondary</th>
@@ -106,7 +103,7 @@ border-collapse: collapse;
   </tr>
 </table>
 </div>
-<div class=footer>
+<br><br><div class=footer>
 <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
 </div>
 </body>

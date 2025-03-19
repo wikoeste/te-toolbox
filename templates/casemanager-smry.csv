@@ -1,10 +1,4 @@
 Link,Description,Created,Assign
-<a href =https://jira.talos.cisco.com/browse/COG-76557 target=_blank>COG-76557</a>,[FP] WNS GLOBAL SERVICES PVT LTD - IPAS - legit email is marked as spam,2024-12-06,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-76557><label for=COG-76557>COG-76557</label>
-<a href =https://jira.talos.cisco.com/browse/COG-76555 target=_blank>COG-76555</a>,[FP] AMBER ENTERPRISES INDIA PRIVATE LTD – WBRS – Good URL blocked,2024-12-06,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-76555><label for=COG-76555>COG-76555</label>
-<a href =https://jira.talos.cisco.com/browse/COG-76554 target=_blank>COG-76554</a>,[FP] IPSILAN NETWORKS– WBRS,2024-12-06,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-76554><label for=COG-76554>COG-76554</label>
-<a href =https://jira.talos.cisco.com/browse/COG-76553 target=_blank>COG-76553</a>,[FP] Umbrella - WBRS - Good URL Blocked,2024-12-06,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-76553><label for=COG-76553>COG-76553</label>
-<a href =https://jira.talos.cisco.com/browse/COG-76552 target=_blank>COG-76552</a>,[FN] C3 TO BE ASSIGNED CPR COMPANY- IPAS- Suspected Spam email,2024-12-06,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-76552><label for=COG-76552>COG-76552</label>
+<a href =https://jira.talos.cisco.com/browse/COG-78395 target=_blank>COG-78395</a>,[FP] Oxford University Press  Inc. - WBRS - Review Domain,2025-03-19,<form action=/takescript method=POST><input type=checkbox name=checks value=COG-78395><label for=COG-78395>COG-78395</label>
 ,,,<button type=submit>Take Selected Tickets</button></form>
-Total Opened,5
-Jira,5
-Bugzilla,0
+Total Opened,1

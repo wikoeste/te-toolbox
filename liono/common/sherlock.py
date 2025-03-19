@@ -42,7 +42,7 @@ def getSbrs(senderIP):
         settings.guidconvert['rj'].append("SBRS Analysis {}".format(ip))
         settings.guidconvert['rj'].append("SBRS Score {}".format(score))
         settings.guidconvert['rj'].append("Rule Hits: {}".format(rules))
-        settings.guidconvert['rj'].append("Bloclk List: {}".format(pblCheck))
+        settings.guidconvert['rj'].append("Block List: {}".format(pblCheck))
     elif netaddr.valid_ipv6(senderIP) is True:
         settings.guidconvert['rj'].append("SBRS IPV6 not supported")
     else:
@@ -88,7 +88,10 @@ def trackerDecodeRules(header,user,key,engine):
         vof_score   = js_result["vof_score"]
         caseRules   = js_result["ini_info"]["case_rules"]
         dfa         = js_result["ini_info"]["dfa_updates"]
-        uridb       = js_result["ini_info"]["uridb_updates"]
+        try:
+            uridb   = js_result["ini_info"]["uridb_updates"]
+        except KeyError:
+            uridb   = None
         toc         = js_result["ini_info"]["toc_rules"]
         webinit     = js_result['webint_enabled']
         was,now,changed,rulename,desc = ([],[],[],[],[])
@@ -106,8 +109,9 @@ def trackerDecodeRules(header,user,key,engine):
             nowScores = "\n".join(now)
             chgScores = "\n".join(changed)
             rulenames = "\n".join(rulename)
-            descripts = "\n".join(desc)
+            descripts = "\n".join(str(i) for i in desc)
 
+# called from server.py --> app.getrj
 def reinjection(sample,user,key):
     rjURL = 'https://sherlock.ironport.com/webapi/reinjection/search'
     params = {'mids': sample}

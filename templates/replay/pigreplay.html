@@ -1,16 +1,77 @@
 <!DOCTYPE html>
 <html>
-<head>
+<header>
     <link rel='stylesheet' href = "../static/css/main.css">
-</head>
-    <header>
-        <!-- menu bar -->
-        <div class="navbar">
-        <h1>Talos Escalations | PigReplay</h1>
+    <div class="navbar">
+      <h1>Talos Escalations | PigReplay</h1>
+        <!--Home-->
+        <a href={{url_for("layout")}}>Home</a>
+        <!--TICKETS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Tickets
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("runscript")}}>GET JIRA TIX</a>
+            <a href={{url_for("assignedtickets")}}>ASSIGNED</a>
+            <a href={{url_for("unassignedtickets")}}>UNASSIGNED</a>
+            <a href={{url_for("getacetix")}}>ANALYST CONSOLE TIX</a>
+            <a href={{url_for("talosjiraeers")}}>Jira-EERS</a>
+            <a href={{url_for("talosjiraops")}}>Jira-TalosOps</a>
+            <a href={{url_for("talosjirathr")}}>Jira-THR</a>
+            <a href={{url_for("talosjiraresbz")}}>Jira-RESBZ</a>
+          </div>
         </div>
-    </header>
-    <p><a href="/layout">Home</a></p>
+        <!--UMBRELLA DROPDOWN MENU-->
+        <div class="dropdown">
+         <button class="dropbtn">Umbrella-Tools
+          <i class="fa fa-caret-down"></i>
+         </button>
+          <div class="dropdown-content">
+            <a href="https://editor.securityresearch.umbrella.com/editor" target="_blank">Research Editor</a>
+            <a href={{url_for("intelproxysearchform")}}>Proxy Script Search</a>
+          </div>
+        </div>
+        <!--SEARCH TOOLS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Search Tools
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="/elasticq">Elastic Queries</a>
+            <a href="/jirasearch">Jira Search</a>
+          </div>
+        </div>
+        <!--SCRIPTS DROPDOWN MENU-->
+        <div class="dropdown">
+          <button class="dropbtn">Scripts
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href={{url_for("reinjection")}}>Reinjection</a>
+            <a href={{url_for("etd")}}>ETD</a>
+            <a href={{url_for("backlogbuddy")}}>Backlog Buddy</a>
+            <a href={{url_for("langs")}}>IPAS Lang Acronyms</a>
+          </div>
+        </div>
+        <!--STAGING SERVERS DROPDOWN MENU-->
+        <div class="dropdown">
+         <button class="dropbtn">Staging Servers
+          <i class="fa fa-caret-down"></i>
+         </button>
+          <div class="dropdown-content">
+            <a href="https://analyst-console-staging.vrt.sourcefire.com/escalations" target="_blank">ACE</a>
+            <a href="https://fmd-tepot-01tst.vrt.sourcefire.com" target="_blank">TEA</a>
+            <a href="https://talosintelligence-staging.herokuapp.com/reputation_center/" target="_blank">Talos Intel</a>
+          </div>
+        </div>
+        <!--LOGOUT BUTTON-->
+        <a href={{url_for("logout")}}>Logout</a>
+      </div>
+    </div>
+</header>
 
+<body>
     <!--ACTION TILES FOR USER-->
    <!--UPLOAD PCAP-->
     <div class="tiles tile thover">
@@ -62,6 +123,7 @@
                   height="150"></a>
           <div class="caption ">Jira Search</div>
       </div>
+</body>
 
 <!--Footer section-->
     <div class="footer">

@@ -8,16 +8,45 @@ def getsnortversion():
     if match is None:
         v = 2
     else:
-        v = 3
+        v = vstr
     return v
 
-def s3(pcap):
-    lua         = settings.projDir+"pigreplay/snortfiles/lua/snort.lua"
+def s3(rules,pcap):
+    lua      = settings.projDir+"pigreplay/snortfiles/lua/snort.lua"
     # Run Snort3
-    snortrun = subprocess.run(['snort','-q','-c',lua,'-r',settings.pcapDir+pcap, '--rule-path',settings.rulesDir,'-A','alert_talos'],check=True,capture_output=True)
+    #test all s3 local rules
+    if rules == 'lcl':
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,'-R', settings.rulesDir+'local.rules', '-A', 'alert_talos'], check=True, capture_output=True)
+
+    #test with max-detect
+    if rules == 'max':
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,
+                    '--rule-path', settings.rulesDir,'--tweaks', 'max_detect', '-A','alert_talos'], check=True, capture_output=True)
+
+    # test with sec over con
+    if "sec" in rules:
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,
+                    '--rule-path', settings.rulesDir,'--tweaks', 'security', '-A','alert_talos'], check=True, capture_output=True)
+
+    # test with balanced
+    if rules == 'bal':
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,
+                    '--rule-path', settings.rulesDir,'--tweaks', 'balanced', '-A','alert_talos'], check=True, capture_output=True)
+
+    # test with connectivity over security
+    if rules == 'con':
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,
+                    '--rule-path', settings.rulesDir,'--tweaks', 'connectivity', '-A', 'alert_talos'], check=True, capture_output=True)
+
+    # test all snort3.rules downloaded
+    if rules == 'all':
+        snortrun = subprocess.run(['snort', '-q', '-c', lua, '-r', settings.pcapDir + pcap,
+                    '--rule-path', settings.rulesDir, '-A', 'alert_talos'], check=True, capture_output=True)
+
     # write snort output to snort.log
     with open(settings.projDir+"pigreplay/snort.log", "w") as f:
         f.write(str(snortrun))
+    f.close()
     res = readsnortlogs()
     return res
 
@@ -33,16 +62,27 @@ def readsnortlogs():
         newstr   = re.sub(r'.*snort.lua:','',list2str)
         teststr  = newstr.replace(r'\n', '\n')
         teststr  = re.sub(r'--------------------------------------------------','',teststr)
+        teststr  = teststr.replace(r'\t','')
+        teststr  = teststr.replace("', stderr=b'')",'\n')
         newlst   = teststr.split('\n')
-        del newlst[-1]
-        del newlst[-1]
+        #del newlst[-1]
+        #del newlst[-1]
         results.append("====SNORT3 RUNTIME LOG DATA====")
         for i in newlst:
             results.append(i)
         results.extend(["===Replay Edited Rule===",settings.rule])
+    # remove the current snort.log & local.rules file for next replay
+    try:
+        os.remove(settings.projDir+'pigreplay/snort.log')
+    except OSError:
+        pass
+    try:
+        os.remove(settings.rulesDir+'local.rules')
+    except:
+        pass
     # print to cli for debugging
-    for r in results:
-        print(r)
+    #for r in results:
+    #    print(r)
     return results                                              # return the snort.log data and alerts if any
 
 #replay a packet wiht pyshark to get ip and protocol data

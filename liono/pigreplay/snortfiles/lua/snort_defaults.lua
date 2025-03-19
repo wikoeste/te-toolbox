@@ -19,7 +19,9 @@
 ---------------------------------------------------------------------------
 
 -- Path to your rules files (this can be a relative path)
-RULE_PATH = '../../snort-rules'
+--RULE_PATH = '../rules'
+
+RULE_PATH='/Users/wikoeste/PycharmProjects/te1-webapp/liono/pigreplay/snort-rules'
 BUILTIN_RULE_PATH = '../builtin_rules'
 PLUGIN_RULE_PATH = '../so_rules'
 

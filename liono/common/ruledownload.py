@@ -41,8 +41,8 @@ def checkrules():
     if os.path.exists(settings.rulesDir) is False:                      # if no snort-rules in user home dir download the rules
         os.makedirs(settings.rulesDir)
         getrulefiles()
-    elif os.path.exists(settings.rulesDir+"local.rules") is True:       # if true snort-rules but timestamp is older than 24 hours, download new rules
-        lastmodtime = os.stat(settings.rulesDir+'local.rules').st_mtime
+    elif os.path.exists(settings.rulesDir+"s3.rules") is True:       # if true snort-rules but timestamp is older than 24 hours, download new rules
+        lastmodtime = os.stat(settings.rulesDir+'s3.rules').st_mtime
         now = time.time()
         timediff = int(now) - int(lastmodtime)
         if timediff >= 86400:

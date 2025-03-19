@@ -1,5 +1,6 @@
 from liono.common import settings
-import re,requests,time,os
+from liono.logging import logger
+import re,requests,time,os,ipaddress
 from concurrent.futures import ThreadPoolExecutor
 global feeds,url,urls
 
@@ -13,11 +14,28 @@ feeds   = ["hermes.botnet.ipv4.txt", "hermes.kaspersky.ipv4.txt",
         "zeus.phishing.domains.txt","zeus.phishing.urls.txt"]
 url     = "https://feeds-proxy.prod.reseng.umbrella.com/actionman/export-proxy-2/curlink/"
 urls	= []
+start   = time.time()
+length  = None
+
+def is_valid_ipv4(ip_str):
+    try:
+        ipaddress.ip_address(ip_str)
+        return True
+    except ValueError:
+        return False
 
 def proxySearch(sample):
-    count = 0
-    for f in feeds:
-        #WORKING SINGLE FEED BY FEED SEARCH
+    dbfeeds =[]
+    count   = 0
+    # if the entry is an ip just check the first 5 feeds
+    verdict = is_valid_ipv4(sample)
+    if verdict is True:
+        dbfeeds = feeds[:3]
+    else:
+        dbfeeds = feeds[4:]
+    print(dbfeeds)
+    # WORKING SINGLE FEED BY FEED SEARCH
+    for f in dbfeeds:
         r = requests.get(url+f)
         if r.status_code == 200:
             if sample in r.text:
@@ -43,16 +61,15 @@ def proxySearch(sample):
                             print(u)
                     else:
                         print("Total URLS: "+ str(count))
-            else:
-                print("No match found in {}".format(f))
+                else:
+                    print("No match found in {}".format(f))
         else:
             print("Err HTTP".format(r.status_code))
-
-def threader(url,sample):
-    r = requests.get(url)
-    if r.status_code == requests.codes.ok:
-        if sample in r.text:
-            return url
+    end = time.time()
+    length = end - start
+    print("IntelDB lookup time:" + str(length))
+    settings.inteldbmatches.update({'time':length})
+    logger.log("IntelDB lookup time:"+ str(length))
 
 def lookup(sample):
     settings.inteldbmatches.clear()

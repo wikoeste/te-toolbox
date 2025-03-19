@@ -3,51 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Replay Results</title>
-        <link rel='stylesheet' href = "../static/css/main.css">
-        <div class="navbar">
-            <h1>Snort Replay Results</h1>
-        </div>
+    <link rel='stylesheet' href = "../static/css/main.css">
+    <div class="navbar">
+        <h1>Snort Replay Results</h1>
+        <!--Snort 3 tile dashboad-->
+        <a href="/pigreplay">Pig Replay</a>
+        <!--delete pcap-->
+        <a href="/filedeletion">Delete Pcap</a>
+        <!--upload pcap-->
+        <a href="/uploadpcap">Upload Pcap</a>
+        <!--download pcap=-->
+        <a href="filedownloads">Download Pcap</a>
+        <!--rule search-->
+        <a href="/rulesearch">Rule Search</a>
+        <!--replay pcap-->
+        <a href="/replay">Replay Pcap</a>
+        <!--LOGOUT BUTTON-->
+        <a href={{url_for("logout")}}>Logout</a>
+    </div>
+
 </head>
 <body>
-<p><a href="/layout">Home</a>|<a href="/uploadpcap">Upload</a>|<a href="/rulesearch">Search</a>|<a href="/replay">Replay</a> </p>
 
-<div class="alignment">
-    <div class="sversion">
-    <p>{{snortversion}}</p>
+<!-- Snort version and original rule-->
+    <div align="left">
+        <p>Snort {{snortversion}}</p>
+        <p>Original Rule: {{rule}}</p>
     </div>
-    <div class="uneditedrule">
-    <p>Rule:</p>
-        <div class="solidborder">
-        <p>{{rule}}</p>
-        </div>
-    </div>
-</div>
+
+<br><br>
 <!-- Pcap table data results-->
-<ul>
-<table>
-    <tr>
-        <th>PCAP DATA</th>
-    </tr>
-    {% for i in pcapdata %}
-    <tr>
-        <td>{{i}}</td>
-    </tr>
-    {% endfor %}
-</table>
-</ul>
-
-<!--Snort log data results-->
-    <ul>
-        <table>
+<div align="left">
+        <table border="1px solid black;">
+            <thead>
+                <th>PCAP DATA</th>
+            </thead>
+            <tbody>
+            {% for i in pcapdata %}
             <tr>
-                <th>SNORT LOG DATA</th>
-            </tr>
-            {% for r in results %}
-            <tr>
-                <td>{{r}}</td>
+                <td>{{i}}</td>
             </tr>
             {% endfor %}
+            </tbody>
         </table>
-    </ul>
+</div>
+<br><br>
+<!--Snort log data results-->
+<div class="divScroll">
+    <table border="5px gray">
+        <tr>
+            <th>Policy: {{pol}}</th>
+        </tr>
+        {% for r in results[:5] %}
+        <tr>
+            <td><font color="orange">{{r}}</font></td>
+        </tr>
+        {% endfor %}
+        {% for r in results[7:] %}
+        <tr>
+            <td>{{r}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<br>
+
 </body>
 </html>

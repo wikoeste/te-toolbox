@@ -1,170 +1,21 @@
 <html>
-<head>
-<link rel='stylesheet' href = "{{ url_for('static', filename='css/main.css') }}">
-<h1 class='logo'>Sherlock API Reinjection Results</h1>
-</head>
-<body>
-<div class='tblcontainer'>
-<table class='tbl'>
-<style>
-table, th, td {
-border: 1px solid black;
-border-collapse: collapse;
-}
-</style>
-<table style='width:100%'>
-<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a > <a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>
-  <tr>
-    <th>CID</th>
-  </tr>
-  <tr>
-    <td>"Sample: cidG50066a9hf7e0d5F8zFvQ2MXbK69LHbCz"""</td>
-  </tr>
-  <tr>
-    <td>Date:  Wed  24 Jul 2024 07:57:23 EDT</td>
-  </tr>
-  <tr>
-    <td>Rule Version:20240724_151227</td>
-  </tr>
-  <tr>
-    <td>Subject: 绩效奖</td>
-  </tr>
-  <tr>
-    <td>Senders: ['982792980@qq.com']</td>
-  </tr>
-  <tr>
-    <td>Recipients: ['yuanyao.zhu@jcetglobal.com']</td>
-  </tr>
-  <tr>
-    <td>Sending IP: 2603:1096:4:ac::14</td>
-  </tr>
-  <tr>
-    <td>SBRS IPV6 not supported</td>
-  </tr>
-  <tr>
-    <td>Flags:</td>
-  </tr>
-  <tr>
-    <td>Keywords: cl dp wk c3 phish</td>
-  </tr>
-  <tr>
-    <td>ESA Score: None</td>
-  </tr>
-  <tr>
-    <td>Verdict: None</td>
-  </tr>
-  <tr>
-    <td>THdr: False</td>
-  </tr>
-  <tr>
-    <td>SBRS Score: None</td>
-  </tr>
-  <tr>
-    <td>Corpus Score: 63.69</td>
-  </tr>
-  <tr>
-    <td>Verdict: S: Suspect Spam</td>
-  </tr>
-  <tr>
-    <td>Thdr: True</td>
-  </tr>
-  <tr>
-    <td>SBRS Score None</td>
-  </tr>
-  <tr>
-    <td>Reinj Score: 6.47</td>
-  </tr>
-  <tr>
-    <td>Verdict: N: No results (ham)</td>
-  </tr>
-  <tr>
-    <td>THdr: True</td>
-  </tr>
-  <tr>
-    <td>SBRS Score: None</td>
-  </tr>
-  <tr>
-    <td>"</td>
-  </tr>
-  <tr>
-    <td>"</td>
-  </tr>
-  <tr>
-    <td>"Sample: ""cidG500669RPCMZtfeYs1zAaTlK7gSGvvMRQ"</td>
-  </tr>
-  <tr>
-    <td>Date:  Fri  12 Jul 2024 02:42:13 EDT</td>
-  </tr>
-  <tr>
-    <td>Rule Version:20240724_151427</td>
-  </tr>
-  <tr>
-    <td>Subject: Re: Suzette's email Issue [Commercial - Anyone]</td>
-  </tr>
-  <tr>
-    <td>Senders: ['sdating@bsa.com.au']</td>
-  </tr>
-  <tr>
-    <td>Recipients: ['kienfoong@nbnco.com.au']</td>
-  </tr>
-  <tr>
-    <td>Sending IP: 2603:10c6:10:211::12</td>
-  </tr>
-  <tr>
-    <td>SBRS IPV6 not supported</td>
-  </tr>
-  <tr>
-    <td>Flags: T</td>
-  </tr>
-  <tr>
-    <td>Keywords: c3 kyoto_h cl kyoto offer tbrd wk dp jb</td>
-  </tr>
-  <tr>
-    <td>ESA Score: None</td>
-  </tr>
-  <tr>
-    <td>Verdict: None</td>
-  </tr>
-  <tr>
-    <td>THdr: False</td>
-  </tr>
-  <tr>
-    <td>SBRS Score: None</td>
-  </tr>
-  <tr>
-    <td>Corpus Score: 0.25</td>
-  </tr>
-  <tr>
-    <td>Verdict: T: Threat Outbreak</td>
-  </tr>
-  <tr>
-    <td>Thdr: True</td>
-  </tr>
-  <tr>
-    <td>SBRS Score None</td>
-  </tr>
-  <tr>
-    <td>Reinj Score: 0.27</td>
-  </tr>
-  <tr>
-    <td>Verdict: N: No results (ham)</td>
-  </tr>
-  <tr>
-    <td>THdr: True</td>
-  </tr>
-  <tr>
-    <td>SBRS Score: None</td>
-  </tr>
-  <tr>
-    <td>"</td>
-  </tr>
-  <tr>
-    <td>"</td>
-  </tr>
-</table>
-</div>
-<div class=footer>
-<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
-</div>
-</body>
+    <head>
+        <title>Reinjection</title>
+        <header>
+            <h1><strong>CID Analysis Results</strong></h1>
+        </header>
+        <link rel='stylesheet' href = "../static/css/main.css">
+    <a href="/">Home | </a><a href="/reinjection">Reinjection | </a><a href="/etd">ETD</a>
+    </head>
+   <body>
+        <br><br>
+        <div class="divScroll">
+            {%for r in res%}
+                <pre>{{r}}</pre>
+            {%endfor%}
+        </div>
+    </body>
+    <div class="footer">
+        <p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>
+    </div>
 </html>

@@ -2,17 +2,11 @@ from liono.common import settings
 import mysql.connector
 
 def htmltable(data):
-    homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</>' \
-               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</></p>\n'
+    homelink = '<p><a href="/layout">Home | </a><a href="/assigned">Assigned</a>' \
+               '<a href="/unassigned"> | Unassigned</a><a href="/getacetix"> | ACE Tix</a></p>\n'
     #print(data)
     fileout = open(settings.acehtml, "w")
     table = "<table>\n"
-    # Create the table's column headers
-    header = ["CASE ID"]
-    table += "  <tr>\n"
-    for column in header:
-        table += "    <th>{0}</th>\n".format(column.strip())
-    table += "  </tr>\n"
     # add css
     css = "<html>\n" \
           "<head>\n" \
@@ -21,8 +15,14 @@ def htmltable(data):
           "</head>\n" \
           "<body>"
     table = css
-    table += "\n<div class='tblcontainer'>\n" \
-             "<table class='tbl'>\n"
+    table += "<style>\n" \
+             "table, th, td {\n" \
+             "border: 1px solid black;\n" \
+             "border-collapse: collapse;\n" \
+             "}\n" \
+             "</style>\n" \
+             "<table style='width:50% display: block; height: 100px; overflow: scroll;'>\n"
+
     # Add links for menu
     table += homelink
     # Create the table's column headers
@@ -35,9 +35,17 @@ def htmltable(data):
         row = line.split(",")
         table += " <tr>\n"
         for column in row:
-            table += "    <td>{0}</td>\n".format(column.strip())
+            if "Unassigned" in column:
+                table += "    <td>"+column+"</td>\n"
+                #table += "    <td>{0}</td>\n".format(column.strip())
+            elif "Tickets" in column:
+                table += "    <td>{0}</td>\n".format(column.strip())
+            else:
+                table += "    <td>{0}</td>\n".format(column.strip())
+                #pass
         table += "  </tr>\n"
     table += "</table>\n</div>"
+    table += "<br><br>"
     # add footer to webpage
     footer = "<div class=footer>\n" \
              "<p>Copyright (c) 2022 wikoeste, Cisco Internal Use Only</p>\n" \
@@ -99,21 +107,19 @@ def get_ace_dispute():
         cursor.execute(sdrtixqry, {'user_id':uid})
         records = cursor.fetchall()
         print("Total assigned SDR Rep tickets ", len(records))
-        data.append("SDR tickets:{}".format(len(records)))
+        data.append("SDR Tickets:{}".format(len(records)))
         for row in records:
             sdrid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/sdr/disputes/"+str(sdrid)+" target=_blank>"+str(sdrid)+"</a>")
         print("================")
         #/////////////////////
         # Get Snort assigned tickets snort_escalations
-        snortixqry = (
-            #"SELECT id FROM snort_escalations where researcher_id = %(user_id)s and status='ASSIGNED' or 'status'='RESEARCHING'")
-            "SELECT id FROM snort_escalations where (researcher_id = %(user_id)s or assignee_id = %(user_id)s) and status='ASSIGNED'")
+        snortixqry = ("SELECT id FROM snort_escalations where (researcher_id = %(user_id)s or assignee_id = %(user_id)s) and status='ASSIGNED' or status='CUSTOMER_PENDING'")
         cursor.execute(snortixqry, {'user_id': uid})
         records = cursor.fetchall()
         print(records)
         print("Total assigned Snort Rep tickets ", len(records))
-        data.append("Snort tickets:{}".format(len(records)))
+        data.append("Snort Tickets:{}".format(len(records)))
         for row in records:
             snortid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/snort_escalations/" + str(
@@ -134,10 +140,10 @@ def get_ace_dispute():
         sdrrecords  = cursor.fetchall()
         cursor.execute(snrtreopened, {'user_id': uid})
         snrtrecords = cursor.fetchall()
-        unassigned  = len(webrecords) + len(filerecords) + len(sdrrecords) + len(snrtrecords)
-        print("Re-Opened Tickets {}".format(unassigned))
+        reopened  = len(webrecords) + len(filerecords) + len(sdrrecords) + len(snrtrecords)
+        print("Re-Opened Tickets {}".format(reopened))
         print("================")
-        data.append("Re-Opened Tickets:{}".format(unassigned))
+        data.append("Re-Opened Tickets:{}".format(reopened))
         for row in webrecords:
             webid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/" + str(
@@ -154,7 +160,8 @@ def get_ace_dispute():
             snrtid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/snort_escalations/" + str(
                 snrtid) + " target=_blank>" + str(snrtid) + "</a>")
-        htmltable(data)
+        #htmltable(data)
+
         # ///////////////////
         # Get ALL unassigned tickets, wbrs,sdr,file; and display
         webunassigned   = ("SELECT id FROM disputes where status='NEW'")
@@ -181,10 +188,10 @@ def get_ace_dispute():
         print("Total Unassigned: {}".format(unassigned))
         print("========================================")
         data.append("ALL Unassigned ACE tickets:{}".format(unassigned))
-        data.append("Web Unassigned:{}".format(len(webrecords)))
-        for row in webrecords:
-            webid = row[0]
-            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/"+str(webid)+" target=_blank>"+str(webid)+"</a>")
+        data.append("Snort Unassigned:{}".format(len(snrtrecords)))
+        for row in snrtrecords:
+            sid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/snort_escalations/"+str(sid)+" target=_blank>"+str(sid)+"</a>")
         data.append("File Unassigned:{}".format(len(filerecords)))
         for row in filerecords:
             fid = row[0]
@@ -193,11 +200,12 @@ def get_ace_dispute():
         for row in sdrrecords:
             sdrid = row[0]
             data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/sdr/disputes/"+str(sdrid)+" target=_blank>"+str(sdrid)+"</a>")
-        data.append("Snort Unassigned:{}".format(len(snrtrecords)))
-        for row in snrtrecords:
-            sid = row[0]
-            data.append("<a href=https://analyst-console.vrt.sourcefire.com/snort_escalations/"+str(sid)+" target=_blank>"+str(sid)+"</a>")
+        data.append("Web Unassigned:{}".format(len(webrecords)))
+        for row in webrecords:
+            webid = row[0]
+            data.append("<a href=https://analyst-console.vrt.sourcefire.com/escalations/webrep/disputes/"+str(webid)+" target=_blank>"+str(webid)+"</a>")
         # Close the DB connection
         cursor.close()
         connection.close()
         htmltable(data)
+        #settings.acedata.append(data)

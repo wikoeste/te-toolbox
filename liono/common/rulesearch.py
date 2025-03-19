@@ -45,7 +45,7 @@ def snortsig(sid):
                             f.close()
                 writelocal(rule)                            # write a local copy of the rule to test with as a backup
     else:                                                   # Error in finding the rule
-        settings.unedited = sid + ":Not Found in Snort Rules"
-        settings.rule = sid + ":Not Found in Snort Rules"
+        settings.unedited   = rule
+        settings.rule       = rule
         print(sid + ":Not Found in Snort Rules")
     print(rule)                                             #print what rule we found for debugging
